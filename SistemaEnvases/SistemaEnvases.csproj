@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5812AFC3-62AC-4964-9FEB-6646F0E37D0A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SistemaEnvases</RootNamespace>
+    <AssemblyName>SistemaEnvases</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>LogoMrlucky.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.Microsoft.Office.Core">
+      <HintPath>Service References\Interop.Microsoft.Office.Core.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Outlook, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Utilerias">
+      <HintPath>..\..\..\..\..\..\..\SisGabWeb\Utilerias.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CAJONES.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CAJONES.Designer.cs">
+      <DependentUpon>CAJONES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataHelperProveedor.cs" />
+    <Compile Include="detalle_envase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="detalle_envase.Designer.cs">
+      <DependentUpon>detalle_envase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ESPARRAGO.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ESPARRAGO.Designer.cs">
+      <DependentUpon>ESPARRAGO.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.cs">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form3.Designer.cs">
+      <DependentUpon>Form3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form4.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form4.Designer.cs">
+      <DependentUpon>Form4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GENERAR.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GENERAR.Designer.cs">
+      <DependentUpon>GENERAR.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mensaje.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mensaje.Designer.cs">
+      <DependentUpon>Mensaje.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporte_Movimientos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reporte_Movimientos.Designer.cs">
+      <DependentUpon>Reporte_Movimientos.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CAJONES.resx">
+      <DependentUpon>CAJONES.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="detalle_envase.resx">
+      <DependentUpon>detalle_envase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ESPARRAGO.resx">
+      <DependentUpon>ESPARRAGO.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form3.resx">
+      <DependentUpon>Form3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form4.resx">
+      <DependentUpon>Form4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GENERAR.resx">
+      <DependentUpon>GENERAR.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mensaje.resx">
+      <DependentUpon>Mensaje.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Reporte_Movimientos.resx">
+      <DependentUpon>Reporte_Movimientos.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LogoMrlucky.ico" />
+    <Content Include="Recursos\acomodotrailer.jpg" />
+    <Content Include="Recursos\actualizaro.png" />
+    <Content Include="Recursos\ajax-loader.gif" />
+    <Content Include="Recursos\aplicar.jpg" />
+    <None Include="Resources\eye.png" />
+    <None Include="Resources\eye2.png" />
+    <None Include="Resources\minimizar.jpg" />
+    <None Include="Resources\inventario.png" />
+    <None Include="Resources\inventarioX.png" />
+    <Content Include="Resources\spinner.gif" />
+    <None Include="Resources\loadi.gif" />
+    <None Include="Recursos\apps.61537.13510798887489323.a555a595-77e2-427a-93a1-0b7fcbe55c85.png" />
+    <Content Include="Recursos\borrar.png" />
+    <Content Include="Recursos\botonImprimir.jpg" />
+    <Content Include="Recursos\BtnAltaMini.jpg" />
+    <Content Include="Recursos\BtnConsulta.jpg" />
+    <Content Include="Recursos\BtnGuardarMini.jpg" />
+    <Content Include="Recursos\BtnRojo.jpg" />
+    <Content Include="Recursos\BtnSalir Mini.jpg" />
+    <Content Include="Recursos\BtnVerde.jpg" />
+    <Content Include="Recursos\Buscar Mini.png" />
+    <Content Include="Recursos\cajas2.jpg" />
+    <None Include="Recursos\salir.bmp" />
+    <None Include="Recursos\Cancel-256.png" />
+    <Content Include="Recursos\cargando.gif" />
+    <Content Include="Recursos\CHECKMRK.ICO" />
+    <Content Include="Recursos\Degradado.jpg" />
+    <Content Include="Recursos\Degradado1.jpg" />
+    <Content Include="Recursos\Excel.png" />
+    <Content Include="Recursos\Excel3.jpg" />
+    <Content Include="Recursos\Excel31.jpg" />
+    <Content Include="Recursos\ExcelMini.png" />
+    <Content Include="Recursos\Flecha !zq.png" />
+    <Content Include="Recursos\Flecha Der.png" />
+    <Content Include="Recursos\fondo_index.jpg" />
+    <Content Include="Recursos\loading.gif" />
+    <Content Include="Recursos\logo embarques.png" />
+    <Content Include="Recursos\logo.png" />
+    <Content Include="Recursos\TRAILER.gif" />
+    <Content Include="Recursos\trailer.ico" />
+    <Content Include="Recursos\trailer3.jpg" />
+    <Content Include="Recursos\TRAILER4.gif" />
+    <Content Include="Recursos\Update.png" />
+    <None Include="Resources\Cancel-256.png" />
+    <None Include="Resources\Update.png" />
+    <None Include="Resources\TRAILER4.gif" />
+    <None Include="Resources\trailer3.jpg" />
+    <None Include="Resources\TRAILER.gif" />
+    <None Include="Resources\logo.png" />
+    <None Include="Resources\logo embarques.png" />
+    <None Include="Resources\loading.gif" />
+    <None Include="Resources\fondo_index.jpg" />
+    <None Include="Resources\Flecha Der.png" />
+    <None Include="Resources\Flecha !zq.png" />
+    <None Include="Resources\ExcelMini.png" />
+    <None Include="Resources\Excel31.jpg" />
+    <None Include="Resources\Excel3.jpg" />
+    <None Include="Resources\Excel.png" />
+    <None Include="Resources\Degradado1.jpg" />
+    <None Include="Resources\Degradado.jpg" />
+    <None Include="Resources\cargando.gif" />
+    <None Include="Resources\cajas2.jpg" />
+    <None Include="Resources\Buscar Mini.png" />
+    <None Include="Resources\BtnVerde.jpg" />
+    <None Include="Resources\BtnSalir Mini.jpg" />
+    <None Include="Resources\BtnRojo.jpg" />
+    <None Include="Resources\BtnGuardarMini.jpg" />
+    <None Include="Resources\BtnConsulta.jpg" />
+    <None Include="Resources\BtnAltaMini.jpg" />
+    <None Include="Resources\botonImprimir.jpg" />
+    <None Include="Resources\borrar.png" />
+    <None Include="Resources\aplicar.jpg" />
+    <None Include="Resources\ajax-loader.gif" />
+    <None Include="Resources\actualizaro.png" />
+    <None Include="Resources\acomodotrailer.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
