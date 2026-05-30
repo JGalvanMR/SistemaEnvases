@@ -60,8 +60,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Utilerias">
-      <HintPath>..\..\..\..\..\..\..\SisGabWeb\Utilerias.dll</HintPath>
+    <Reference Include="Utilerias, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\SisGabWeb\Utilerias.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
