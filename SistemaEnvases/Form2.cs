@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace SistemaEnvases
 {
-    
+
     public partial class DetalleEnvase : Form
     {
         SqlConnection thisConnecion = new SqlConnection(Utilerias.Class1.ConnectionString);
@@ -91,9 +91,10 @@ namespace SistemaEnvases
                 hoja.Cells[6, 4] = "Nombre Proveedor";
                 hoja.Cells[6, 5] = "Entradas";
                 hoja.Cells[6, 6] = "Salidas";
-                hoja.Cells[6, 7] = "Inventario";    
+                hoja.Cells[6, 7] = "Inventario";
             }
-            else {
+            else
+            {
                 if (detalle.Checked == true)
                 {
 
@@ -116,7 +117,7 @@ namespace SistemaEnvases
                 }
             }
 
-            
+
             r = hoja.Range[hoja.Cells[6, 1], hoja.Cells[6, 14]];
             r.Font.Bold = true;
 
@@ -159,23 +160,23 @@ namespace SistemaEnvases
                         hoja.Cells[filaactual, 3] = row[2];
                         hoja.Cells[filaactual, 4] = row[3];
                         hoja.Cells[filaactual, 5] = row[6];
-                        
+
                     }
                 }
                 filaactual++;
-            } 
+            }
 
 
             int rowdatagrid = 8;
             foreach (DataGridViewRow row in reportegrid.Rows)
-            {   
-                
-            } 
+            {
+
+            }
 
             aplicacion.Columns.AutoFit();
             aplicacion.Rows.AutoFit();
             aplicacion.Visible = true;
- 
+
         }
 
         public void FormattingExcelCells(Microsoft.Office.Interop.Excel.Range range, string HTMLcolorCode, System.Drawing.Color fontColor, bool IsFontbool)
@@ -197,7 +198,8 @@ namespace SistemaEnvases
                 reportegrid.Columns["SALIDAS"].Visible = true;
 
             }
-            else {
+            else
+            {
                 reportegrid.Columns["ENTRADAS"].Visible = false;
                 reportegrid.Columns["SALIDAS"].Visible = false;
             }
@@ -205,7 +207,7 @@ namespace SistemaEnvases
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+
             FormCollection formulariosApp = Application.OpenForms;
             foreach (Form f in formulariosApp)
             {
@@ -220,7 +222,7 @@ namespace SistemaEnvases
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void dateTimeinventarioinicial_ValueChanged(object sender, EventArgs e)
@@ -307,7 +309,7 @@ namespace SistemaEnvases
                 Total_Entradas = Total_Entradas + Convert.ToInt32(entradas);
                 Total_Salidas = Total_Salidas + Convert.ToInt32(salidas);
                 Total_Inventario_Final = Total_Inventario_Final + Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(salidas) - Convert.ToInt32(entradas);
-				
+
 
             }
 
@@ -374,7 +376,7 @@ namespace SistemaEnvases
 
             if (nombrecolumna == "ENTRADAS")
             {
-                
+
                 thisConnecion.Open();
                 string query = "SELECT * FROM TB_ENTRADAS_ENVASES INNER JOIN TB_DETENTRADAS_ENVASES ON TB_ENTRADAS_ENVASES.FOLIO = TB_DETENTRADAS_ENVASES.FOLIO WHERE TB_ENTRADAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(Datetimepickerrepor.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(Datetimepickerrepor.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE = '" + clave_envase + "' ORDER BY FECHA, ENV_CLAVE";
                 SqlCommand cm = new SqlCommand(query, thisConnecion);
@@ -436,7 +438,7 @@ namespace SistemaEnvases
             }
             else if (nombrecolumna == "SALIDAS")
             {
-                
+
                 thisConnecion.Open();
                 string query = "SELECT * FROM TB_SALIDAS_ENVASES INNER JOIN TB_DETSALIDAS_ENVASES ON TB_SALIDAS_ENVASES.FOLIO = TB_DETSALIDAS_ENVASES.FOLIO WHERE TB_SALIDAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(Datetimepickerrepor.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(Datetimepickerrepor.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE = '" + clave_envase + "' ORDER BY FECHA, ENV_CLAVE";
                 SqlCommand cm = new SqlCommand(query, thisConnecion);
@@ -498,12 +500,12 @@ namespace SistemaEnvases
             }
 
             //obtienes el valor de la primer columna
-            
+
         }
 
         private void reportegrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
-        }   
+        }
     }
 }

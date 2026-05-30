@@ -109,7 +109,7 @@ namespace SistemaEnvases
         string rancho = "";
         string tabla = "";
         public string Actualizar = "";
-
+        private bool requiereActualizar = false;
 
         public Form1()
         {
@@ -191,10 +191,10 @@ namespace SistemaEnvases
 
 
             #region VALIDA Y FORZA ACTUALIZAR
-            if (ValidaActualizacion() == "S")
+            if (ValidaActualizacion())
             {
-                Actualizar = "S";
-                this.Close();
+                requiereActualizar = true;
+                this.Close(); // Cerramos el formulario para dar paso al actualizador
             }
             #endregion
 
@@ -1500,7 +1500,13 @@ namespace SistemaEnvases
             Chofer.ReadOnly = true;
             Operador.ReadOnly = true;
 
-
+            #region VALIDA Y FORZA ACTUALIZAR
+            if (ValidaActualizacion())
+            {
+                requiereActualizar = true;
+                this.Close(); // Cerramos el formulario para dar paso al actualizador
+            }
+            #endregion
 
         }
 
@@ -2064,6 +2070,14 @@ namespace SistemaEnvases
                 fecha_hoy_hoy = Convert.ToDateTime(cmdfechoy.ExecuteScalar()).ToString("dd/MM/yyyy");
                 FecSave = Convert.ToDateTime(cmdfechoy.ExecuteScalar()).ToString("dd/MM/yyyy HH:mm:ss");
                 thisConnecion.Close();
+
+                #region VALIDA Y FORZA ACTUALIZAR
+                if (ValidaActualizacion())
+                {
+                    requiereActualizar = true;
+                    this.Close(); // Cerramos el formulario para dar paso al actualizador
+                }
+                #endregion
             }
             catch (Exception ex)
             {
@@ -6291,10 +6305,10 @@ namespace SistemaEnvases
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             #region VALIDA Y FORZA ACTUALIZAR
-            if (ValidaActualizacion() == "S")
+            if (ValidaActualizacion())
             {
-                Actualizar = "S";
-                this.Close();
+                requiereActualizar = true;
+                this.Close(); // Cerramos el formulario para dar paso al actualizador
             }
             #endregion
             if (tabControl1.SelectedIndex == 6) // captura de Inventario Fisico 
@@ -6567,34 +6581,69 @@ namespace SistemaEnvases
         {
 
             #region DESCARGA LA NUEVA VERSION DEL EJECUTABLE
-            //MessageBox.Show("Despues de Cerrar");
-            string ArchDescarga = @"c:\sisgabweb\DownFile.exe";
-            if (Actualizar == "S" && File.Exists(ArchDescarga))
+            if (requiereActualizar)
             {
-                string ArchNuevo = @"\\gabira1\sisgabweb\OrdenVentaExp.exe";
-                if (File.Exists(ArchNuevo))
-                    //File.Copy(ArchNuevo, ArchViejo, true);
-                    System.Diagnostics.Process.Start(@"c:\sisgabweb\DownFile.exe", "OrdenVentaExp.exe");
+                string updaterPath = @"c:\sisgabweb\DownFile.exe";
+
+                if (File.Exists(updaterPath))
+                {
+                    try
+                    {
+                        // Iniciamos el actualizador de manera limpia
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = updaterPath,
+                            Arguments = "SistemaEnvases.exe",
+                            UseShellExecute = true // Asegura que corra correctamente en el entorno de Windows
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"No se pudo iniciar el actualizador: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró el archivo actualizador (DownFile.exe).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             #endregion
 
         }
 
         #region METODO PARA VALIDAR LA ACTUALIZACION DEL EJECUTABLE
-        public string ValidaActualizacion()
+        public bool ValidaActualizacion()
         {
-            string Actu = "N";
-            if (File.Exists(@"\\gabira1\sisgabweb\Valida.txt"))
+            string rutaServerTxt = @"\\gabira1\sisgabweb\Valida.txt";
+            string rutaServerExe = @"\\gabira1\sisgabweb\SistemaEnvases.exe";
+            string rutaLocalExe = @"c:\sisgabweb\SistemaEnvases.exe";
+
+            try
             {
-                DateTime FechaLocal = File.GetLastWriteTime(@"c:\sisgabweb\SistemaEnvases.exe");
-                DateTime FechaServer = File.GetLastWriteTime(@"\\gabira1\sisgabweb\SistemaEnvases.exe");
-                if (FechaServer > FechaLocal)
+                // 1. Validamos que el archivo de control en el servidor exista
+                if (File.Exists(rutaServerTxt) && File.Exists(rutaServerExe) && File.Exists(rutaLocalExe))
                 {
-                    MessageBox.Show("Hay una VERSION MAS Reciente se va a Cerrar el Sistema para que se Actualice, hay que volver abrir el programa!!", "Actualizacion", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return Actu = "S";
+                    DateTime fechaLocal = File.GetLastWriteTime(rutaLocalExe);
+                    DateTime fechaServer = File.GetLastWriteTime(rutaServerExe);
+
+                    // 2. Comparamos fechas
+                    if (fechaServer > fechaLocal)
+                    {
+                        MessageBox.Show("Hay una versión más reciente. El sistema se cerrará para actualizarse.\n\nPor favor, vuelva a abrir el programa cuando finalice.",
+                                        "Actualización Disponible",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                        return true;
+                    }
                 }
             }
-            return Actu;
+            catch (IOException ex)
+            {
+                // Si la red se cae o el archivo está bloqueado, atrapamos el error para que no truene la app
+                Console.WriteLine($"Error al validar actualización: {ex.Message}");
+            }
+
+            return false;
         }
         #endregion
 
