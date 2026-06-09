@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Data.SqlClient;
-//using Office = Microsoft.Office.Core;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.IO;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Printing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+//using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace SistemaEnvases
 {
@@ -108,8 +109,8 @@ namespace SistemaEnvases
         string proveedor = "";
         string rancho = "";
         string tabla = "";
-
-
+        public string Actualizar = "";
+        private bool requiereActualizar = false;
 
         public Form1()
         {
@@ -188,6 +189,15 @@ namespace SistemaEnvases
             SqlCommand cmd = new SqlCommand(fecha, thisConnecion);
             string fecha_hoy = Convert.ToDateTime(cmd.ExecuteScalar()).ToString("dd/MM/yyyy");
             thisConnecion.Close();
+
+
+            #region VALIDA Y FORZA ACTUALIZAR
+            if (ValidaActualizacion())
+            {
+                requiereActualizar = true;
+                this.Close(); // Cerramos el formulario para dar paso al actualizador
+            }
+            #endregion
 
 
             ToolTip toolTip1 = new ToolTip();
@@ -1491,7 +1501,13 @@ namespace SistemaEnvases
             Chofer.ReadOnly = true;
             Operador.ReadOnly = true;
 
-
+            #region VALIDA Y FORZA ACTUALIZAR
+            if (ValidaActualizacion())
+            {
+                requiereActualizar = true;
+                this.Close(); // Cerramos el formulario para dar paso al actualizador
+            }
+            #endregion
 
         }
 
@@ -1803,9 +1819,93 @@ namespace SistemaEnvases
             }
         }
 
+        private void Imprimir_Salida_Con_Folio(int folio)
+        {
+            float producto = 152.0F;
+
+            // ✅ Usar el folio recibido como parámetro en lugar de clb_conse.Text
+            String drawString1 = "\"Comercializadora GAB\"";
+            String drawString2 = "Salida de Envases\r\n" + DateTime.Now.ToString("dd/MM/yyyy   hh:mm tt");
+            String drawString3 = "FOLIO: " + folio.ToString();  // ← Cambio aquí
+            String drawString4 = "PROV: " + proveedor.Trim();
+            String drawString5 = "RANCHO: " + rancho.Trim();
+            String drawString6 = "TABLA: " + tabla.Trim();
+
+            String envasesprod = "CAN    ENV    DESCRIPCION\r\n";
+            foreach (DataRow row in ProductosGuardar.Rows)
+            {
+                envasesprod = envasesprod + row["Cantidad"] + "  |   " + row["cvl_envase"] + "  |  " + row["nombre_envase"] + "\r\n    ";
+                envasesprod = envasesprod + row["cvl_producto"] + "  |  " + row["nombre_producto"] + "\r\n";
+                producto = producto + 25;
+            }
+
+            String drawLinea = "Prueba7", drawProd = "Prueba8", drawPedi = "Prueba9", drawcajas = "Prueba10", drawtaraprox = "Prueba11";
+            String drawstring8 = "Recibio Chofer: " + Chofer.Text.Trim();
+            String drawstring9 = "Entrego Operador: " + Operador.Text.Trim();
+            String drawstring10 = "* " + folio.ToString() + " *";  // ← Cambio aquí
+            String drawstring11 = "__________________________";
+            String drawstring12 = "45";
+
+            PrintDocument p = new PrintDocument();
+
+            // Fuentes
+            Font drawFont = new Font("Courier New", 8);
+            Font drawFont1 = new Font("Arial", 12, FontStyle.Bold | FontStyle.Underline);
+            Font drawFont2 = new Font("Arial", 10, FontStyle.Bold);
+            Font drawFont3 = new Font("Arial", 10, FontStyle.Bold | FontStyle.Underline);
+            Font drawFont4 = new Font("Arial", 9, FontStyle.Bold);
+            Font drawFont5 = new Font("Arial", 7, FontStyle.Bold);
+            Font drawFont8 = new Font("Arial", 8, FontStyle.Bold | FontStyle.Underline);
+            Font drawFont9 = new Font("Arial", 8, FontStyle.Bold | FontStyle.Underline);
+            Font drawFont10 = new Font("PF Barcode 39", 20);
+            Font drawFont11 = new Font("Arial", 12, FontStyle.Bold | FontStyle.Underline);
+
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
+
+            // Puntos de posición
+            PointF drawPoint1 = new PointF(40.0F, 15.0F);
+            PointF drawPoint2 = new PointF(7.0f, 45.0f);
+            PointF drawPoint3 = new PointF(7.0f, 78.0f);
+            PointF drawpoint4 = new PointF(7.0F, 95.0F);
+            PointF drawpoint5 = new PointF(7.0F, 108.0F);
+            PointF drawpoint6 = new PointF(7.0F, 121.0F);
+            PointF drawpoint7 = new PointF(7.0F, 140.0F);
+            PointF drawpoint8 = new PointF(7.0F, producto);
+            producto = producto + 25;
+            PointF drawpoint9 = new PointF(7.0F, producto);
+            producto = producto + 30;
+            PointF drawpoint10 = new PointF(45.0f, producto);
+            producto = producto + 30;
+            PointF drawpoint11 = new PointF(7.0f, producto);
+
+            p.PrintPage += delegate (object sender1, PrintPageEventArgs e1)
+            {
+                e1.Graphics.DrawString(drawString1, drawFont1, drawBrush, drawPoint1);
+                e1.Graphics.DrawString(drawString2, drawFont2, drawBrush, drawPoint2);
+                e1.Graphics.DrawString(drawString3, drawFont3, drawBrush, drawPoint3);
+                e1.Graphics.DrawString(drawString4, drawFont4, drawBrush, drawpoint4);
+                e1.Graphics.DrawString(drawString5, drawFont4, drawBrush, drawpoint5);
+                e1.Graphics.DrawString(drawString6, drawFont4, drawBrush, drawpoint6);
+                e1.Graphics.DrawString(envasesprod, drawFont5, drawBrush, drawpoint7);
+                e1.Graphics.DrawString(drawstring8, drawFont8, drawBrush, drawpoint8);
+                e1.Graphics.DrawString(drawstring9, drawFont9, drawBrush, drawpoint9);
+                e1.Graphics.DrawString(drawstring10, drawFont10, drawBrush, drawpoint10);
+                e1.Graphics.DrawString(drawstring11, drawFont11, drawBrush, drawpoint11);
+            };
+
+            try
+            {
+                p.Print();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception Occured While Printing", ex);
+            }
+        }
+
         public PrintDocument printDocument1 { get; set; }
 
-        private void BtnSplitPed_Click(object sender, EventArgs e)
+        private void BtnSplitPedLEGACY_Click(object sender, EventArgs e)
         {
             thisConnecion.Open();
             string fecha = "SELECT SYSDATETIME()";
@@ -1959,6 +2059,268 @@ namespace SistemaEnvases
             Limpiar_Salida();
         }
 
+        private void BtnSplitPed_Click(object sender, EventArgs e)
+        {
+            string FecSave;
+            // ✅ 1. Obtener fecha del servidor (mantener tu lógica original)
+            try
+            {
+                if (thisConnecion.State != ConnectionState.Open) thisConnecion.Open();
+                string fecha = "SELECT SYSDATETIME()";
+                SqlCommand cmdfechoy = new SqlCommand(fecha, thisConnecion);
+                fecha_hoy_hoy = Convert.ToDateTime(cmdfechoy.ExecuteScalar()).ToString("dd/MM/yyyy");
+                FecSave = Convert.ToDateTime(cmdfechoy.ExecuteScalar()).ToString("dd/MM/yyyy HH:mm:ss");
+                thisConnecion.Close();
+
+                #region VALIDA Y FORZA ACTUALIZAR
+                if (ValidaActualizacion())
+                {
+                    requiereActualizar = true;
+                    this.Close(); // Cerramos el formulario para dar paso al actualizador
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                thisConnecion.Close();
+                MessageBox.Show($"Error al obtener fecha del servidor: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // ✅ 2. Validación de fecha para usuarios (mantener tu lógica original)
+            if (usuariostotales.Contains(usuario_actual) == false)
+            {
+                fechasal.Text = fecha_hoy_hoy;
+            }
+
+            // ✅ 3. Validaciones de campos (mantener tus validaciones originales)
+            if ((clbprov.Text.ToString().Trim().Length == 0) || (cmb_proveedor.Text.ToString().Trim().Length == 0))
+            {
+                MessageBox.Show("Seleccione o ingrese un Proveedor válido");
+                return;
+            }
+
+            if (Chofer.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Ingrese un Nombre para el chofer");
+                return;
+            }
+
+            if (Operador.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Ingrese un Nombre para el operador");
+                return;
+            }
+
+            if (dataGridView1.Rows.Count <= 0)
+            {
+                MessageBox.Show("Ingrese Al menos un Envase para La Salida");
+                return;
+            }
+
+            if (ProductosGuardar.Rows.Count <= 0)
+            {
+                MessageBox.Show("Ingrese Al menos un Envase para La Salida");
+                return;
+            }
+
+            // ✅ 4. Preparar variables necesarias
+            proveedor = cmb_proveedor.Text.ToString().Trim();
+            rancho = Cmb_Rancho.Text.ToString().Trim();
+            tabla = Cmb_Tabla.Text.ToString().Trim();
+
+            if (rancho == "Sin Ranchos Disponibles")
+            {
+                rancho = "";
+            }
+
+            if (tabla == "Sin Tablas Disponibles")
+            {
+                tabla = "";
+            }
+
+            // ✅ 5. Preparar conexión y transacción
+            if (thisConnecion.State != ConnectionState.Open) thisConnecion.Open();
+            SqlTransaction transaction = thisConnecion.BeginTransaction();
+
+            try
+            {
+                int folioGenerado = 0;
+                SqlCommand cmd;
+
+                // ✅ 6. Insertar cabecera Y capturar el folio con SCOPE_IDENTITY()
+                string insertHeader = @"INSERT INTO TB_SALIDAS_ENVASES(
+    FECHA, PROV_CLAVE, PROV_NOMBRE, RCH_CLAVE, RCH_NOMBRE, 
+    TBL_CLAVE, TBL_NOMBRE, NOM_CHOFER, NOM_OPERADOR, SAL_STATUS, FECHA_GUARDADO) 
+    VALUES(@Fecha, @ProvClave, @ProvNombre, @RchClave, @RchNombre, 
+           @TblClave, @TblNombre, @Chofer, @Operador, 'T', @FechaGuardado);
+    SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                cmd = new SqlCommand(insertHeader, thisConnecion, transaction);
+                cmd.Parameters.AddWithValue("@Fecha", Convert.ToDateTime(fechasal.Text));
+                cmd.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
+                cmd.Parameters.AddWithValue("@ProvNombre", cmb_proveedor.Text.Trim());
+                cmd.Parameters.AddWithValue("@RchClave", clbrancho.Text.Trim());
+                cmd.Parameters.AddWithValue("@RchNombre", rancho.Trim());
+                cmd.Parameters.AddWithValue("@TblClave", clbtabla.Text.Trim());
+                cmd.Parameters.AddWithValue("@TblNombre", tabla.Trim());
+                cmd.Parameters.AddWithValue("@Chofer", Chofer.Text.Trim());
+                cmd.Parameters.AddWithValue("@Operador", Operador.Text.Trim());
+                cmd.Parameters.AddWithValue("@FechaGuardado", FecSave);
+
+                // ✅ 7. ¡CAPTURAR EL FOLIO REAL GENERADO POR LA BD!
+                folioGenerado = Convert.ToInt32(cmd.ExecuteScalar());
+
+                // ✅ 8. Insertar detalles y actualizar inventarios (todo con parámetros y transacción)
+                foreach (DataRow row in ProductosGuardar.Rows)
+                {
+                    int cantidad = Convert.ToInt32(row["Cantidad"].ToString().Trim());
+                    string envClave = row["cvl_envase"].ToString().Trim();
+                    string envNombre = row["nombre_envase"].ToString().Trim();
+                    string prodClave = row["cvl_producto"].ToString().Trim();
+                    string prodNombre = row["nombre_producto"].ToString().Trim();
+                    DateTime fechaSalida = Convert.ToDateTime(fechasal.Text);
+
+                    // --- Insertar detalle ---
+                    string insertDetalle = @"INSERT INTO TB_DETSALIDAS_ENVASES(
+        FOLIO, ENV_CLAVE, ENV_NOMBRE, CANTIDAD, PROD_CLAVE, PROD_NOMBRE) 
+        VALUES(@Folio, @EnvClave, @EnvNombre, @Cantidad, @ProdClave, @ProdNombre)";
+
+                    // CORREGIDO: Se agregó 'transaction' al constructor
+                    cmd = new SqlCommand(insertDetalle, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@Folio", folioGenerado);
+                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
+                    cmd.Parameters.AddWithValue("@EnvNombre", envNombre);
+                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@ProdClave", prodClave);
+                    cmd.Parameters.AddWithValue("@ProdNombre", prodNombre);
+                    cmd.ExecuteNonQuery();
+
+                    // --- UPDATE 1: TB_MSTR_ENVASES ---
+                    string updateMstr = @"UPDATE TB_MSTR_ENVASES 
+        SET cant_salidas = (cant_salidas + @Cantidad) 
+        WHERE prov_clave = @ProvClave 
+          AND rch_clave = @RchClave 
+          AND tbl_clave = @TblClave 
+          AND env_clave = @EnvClave";
+
+                    // CORREGIDO: Se agregó 'transaction' al constructor
+                    cmd = new SqlCommand(updateMstr, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
+                    cmd.Parameters.AddWithValue("@RchClave", clbrancho.Text.Trim());
+                    cmd.Parameters.AddWithValue("@TblClave", clbtabla.Text.Trim());
+                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
+                    cmd.ExecuteNonQuery();
+
+                    // --- UPDATE 2: TB_MSTR_INV_ENVASES ---
+                    string updateInv = @"UPDATE TB_MSTR_INV_ENVASES 
+        SET ENV_INV_CANT = (ENV_INV_CANT - @Cantidad) 
+        WHERE ENV_CLAVE = @EnvClave";
+
+                    // CORREGIDO: Se agregó 'transaction' al constructor
+                    cmd = new SqlCommand(updateInv, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
+                    cmd.ExecuteNonQuery();
+
+                    // --- UPDATE 3: TB_MSTR_INV_ENVASES_dos ---
+                    string updateInvDos = @"UPDATE TB_MSTR_INV_ENVASES_dos 
+        SET ENV_SAL_CANT = (ENV_SAL_CANT + @Cantidad) 
+        WHERE ENV_CLAVE = @EnvClave 
+          AND ENV_FECHA = @FechaEnv";
+
+                    // CORREGIDO: Se agregó 'transaction' al constructor
+                    cmd = new SqlCommand(updateInvDos, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
+                    cmd.Parameters.AddWithValue("@FechaEnv", fechaSalida);
+                    cmd.ExecuteNonQuery();
+
+                    // --- UPDATE 4: TB_MSTR_INV_ENVASES_sin_corte ---
+                    string updateInvSinCorte = @"UPDATE TB_MSTR_INV_ENVASES_sin_corte 
+        SET ENV_SAL_CANT = (ENV_SAL_CANT + @Cantidad) 
+        WHERE ENV_CLAVE = @EnvClave 
+          AND ENV_FECHA = @FechaEnv";
+
+                    // CORREGIDO: Se agregó 'transaction' al constructor
+                    cmd = new SqlCommand(updateInvSinCorte, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
+                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
+                    cmd.Parameters.AddWithValue("@FechaEnv", fechaSalida);
+                    cmd.ExecuteNonQuery();
+
+                    // --- Validación especial para envase 81 ---
+                    if (envClave == "81")
+                    {
+                        // NOTA: Asegúrate de que este método interno use la misma conexión/transacción si realiza escrituras.
+                        validarproveedoresparragoT(clbprov.Text.Trim(), fechaSalida.ToString("dd/MM/yyyy"), transaction);
+                    }
+                }
+
+                // ✅ 9. Registrar movimiento USANDO el folio capturado
+                string tipoMov = Convert.ToDateTime(fecha_hoy_hoy) > Convert.ToDateTime(fechasal.Text) ? "ATRASADO" : "SALIDA";
+                string detalleMov = Convert.ToDateTime(fecha_hoy_hoy) > Convert.ToDateTime(fechasal.Text)
+                    ? $"INSERCCION DE SALIDA A DESTIEMPO FECHA {fechasal.Text}"
+                    : $"INSERCCION DE SALIDA FECHA {fechasal.Text}";
+
+                string insertLog = @"INSERT INTO tb_registro_movimientos 
+    (fecha, nom_compu, nom_usu, tipo_mov, op_clave, folio, detalle, sistema, mov_folio) 
+    VALUES(@FechaLog, @Maquina, @Usuario, @TipoMov, '2.18', @Folio, @Detalle, 'SISGAB', @Folio)";
+
+                // CORREGIDO: Se agregó 'transaction' al constructor
+                cmd = new SqlCommand(insertLog, thisConnecion, transaction);
+                cmd.Parameters.AddWithValue("@FechaLog", DateTime.Now);
+                cmd.Parameters.AddWithValue("@Maquina", Environment.MachineName.Trim());
+                cmd.Parameters.AddWithValue("@Usuario", usuario_actual);
+                cmd.Parameters.AddWithValue("@TipoMov", tipoMov);
+                cmd.Parameters.AddWithValue("@Folio", folioGenerado);
+                cmd.Parameters.AddWithValue("@Detalle", detalleMov);
+                cmd.ExecuteNonQuery();
+
+                // ✅ 10. Confirmar TODA la transacción
+                transaction.Commit();
+                thisConnecion.Close();
+
+                // ✅ 11. Mensaje de éxito
+                MessageBox.Show("La Salida se ha almacenado Con Exito");
+
+                // ✅ 12. Si es atrasado, realizar corte (fuera de la transacción principal)
+                if (Convert.ToDateTime(fecha_hoy_hoy) > Convert.ToDateTime(fechasal.Text))
+                {
+                    realizar_corte(Convert.ToDateTime(fechasal.Text).ToString("dd/MM/yyyy"), "S", "DESTIEMPO");
+                }
+
+                // ✅ 13. Imprimir USANDO el folio capturado
+                PrintDialog printDialog1 = new PrintDialog();
+                printDialog1.Document = printDocument1;
+                DialogResult result = printDialog1.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    Imprimir_Salida_Con_Folio(folioGenerado);
+                }
+
+                // ✅ 14. Limpiar formulario
+                Limpiar_Salida();
+            }
+            catch (Exception ex)
+            {
+                // ✅ 15. Revertir todo si algo falla
+                try
+                {
+                    transaction?.Rollback();
+                }
+                catch { /* Ignorar si la transacción ya se cerró o no se inició */ }
+
+                thisConnecion.Close();
+                MessageBox.Show($"Error al guardar la salida: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // ✅ 16. Asegurar que la conexión se cierre siempre
+                if (thisConnecion.State == ConnectionState.Open) thisConnecion.Close();
+            }
+        }
 
         public void realizar_corte(string fecha_mov, string tipo, string mov)
         {
@@ -2703,6 +3065,45 @@ namespace SistemaEnvases
 
         }
 
+        public void validarproveedoresparragoT(string PROVEEDOR_ID, string fecha_actual, SqlTransaction transaction)
+        {
+            // El método asume que thisConnecion está abierta y con la transacción activa.
+            // Se crean todos los comandos asociados a la transacción recibida.
+
+            // 1. Consultar si el proveedor ya existe en la tabla de control
+            string query = @"SELECT cve_prov 
+                     FROM Tb_ENV_PROV_CAJ_ESPARRAGO 
+                     WHERE cve_prov = @ProvId AND estatus = '1'";
+            SqlCommand cmd = new SqlCommand(query, thisConnecion, transaction);
+            cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+
+            object objValue = cmd.ExecuteScalar();
+
+            // 2. Si no existe, y no es uno de los proveedores exentos, insertarlo
+            if (objValue == null)
+            {
+                if (PROVEEDOR_ID.Trim() != "01" && PROVEEDOR_ID.Trim() != "03" &&
+                    PROVEEDOR_ID.Trim() != "RO" && PROVEEDOR_ID.Trim() != "212")
+                {
+                    // Insertar en Tb_ENV_PROV_CAJ_ESPARRAGO
+                    string insertProv = @"INSERT INTO Tb_ENV_PROV_CAJ_ESPARRAGO (cve_prov, estatus) 
+                                 VALUES (@ProvId, '1')";
+                    cmd = new SqlCommand(insertProv, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+                    cmd.ExecuteNonQuery();
+
+                    // Insertar en TB_MSTR_INV_CAJAS_PROV_ESPARRAGO
+                    string insertInv = @"INSERT INTO TB_MSTR_INV_CAJAS_PROV_ESPARRAGO 
+                                 (PROV_CLAVE, ENV_CLAVE, ENV_FECHA, ENV_INV_INI_CANT, ENV_ENTR_CANT, ENV_SAL_CANT) 
+                                 VALUES (@ProvId, '81', @Fecha, 0, 0, 0)";
+                    cmd = new SqlCommand(insertInv, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+                    cmd.Parameters.AddWithValue("@Fecha", fecha_actual);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -3351,10 +3752,36 @@ namespace SistemaEnvases
 
                 thisConnecion.Close();
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -3514,10 +3941,36 @@ namespace SistemaEnvases
 
                 thisConnecion.Close();
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -3729,12 +4182,36 @@ namespace SistemaEnvases
                 Reporte_Kardex.DefaultView.Sort = "NUMERO, FECHA, Tipo, IDENVASE";
                 DataView dv = Reporte_Kardex.DefaultView;
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
 
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -3935,16 +4412,42 @@ namespace SistemaEnvases
 
                 thisConnecion.Close();
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
-                aplicacion = new Microsoft.Office.Interop.Excel.Application();
-                libro = aplicacion.Workbooks.Add();
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                //rango.Font.Bold = true;
+                //rango.Font.Size = 16;
+                //rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                //                aplicacion.Visible = true;
+
+                #endregion
+
+                #region issue: dll Interoperabilidad de Excel
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
+                //aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                //libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
-                hoja = (Microsoft.Office.Interop.Excel.Worksheet)libro.Worksheets.get_Item(1);
+                //hoja = (Microsoft.Office.Interop.Excel.Worksheet)libro.Worksheets.get_Item(1);
 
-                Microsoft.Office.Interop.Excel.Range r;
+                //Microsoft.Office.Interop.Excel.Range r;
+                #endregion
                 hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
                 r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
                 r.Font.Bold = true;
@@ -4035,7 +4538,8 @@ namespace SistemaEnvases
 
                     rowdatagrid++;
                 }
-
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
                 aplicacion.Columns.AutoFit();
                 aplicacion.Rows.AutoFit();
                 aplicacion.Visible = true;
@@ -4098,9 +4602,37 @@ namespace SistemaEnvases
                 thisConnecion.Close();
 
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
+
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                //rango.Font.Bold = true;
+                //rango.Font.Size = 16;
+                //rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -4312,11 +4844,37 @@ namespace SistemaEnvases
                 DataView dv = Reporte_Kardex.DefaultView;
 
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
+
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
 
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -5952,6 +6510,13 @@ namespace SistemaEnvases
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            #region VALIDA Y FORZA ACTUALIZAR
+            if (ValidaActualizacion())
+            {
+                requiereActualizar = true;
+                this.Close(); // Cerramos el formulario para dar paso al actualizador
+            }
+            #endregion
             if (tabControl1.SelectedIndex == 6) // captura de Inventario Fisico 
             {
 
@@ -6217,6 +6782,78 @@ namespace SistemaEnvases
             //            e.Cancel = false;
             //}
         }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+            #region DESCARGA LA NUEVA VERSION DEL EJECUTABLE
+            if (requiereActualizar)
+            {
+                string updaterPath = @"c:\sisgabweb\DownFile.exe";
+
+                if (File.Exists(updaterPath))
+                {
+                    try
+                    {
+                        // Iniciamos el actualizador de manera limpia
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = updaterPath,
+                            Arguments = "SistemaEnvases.exe",
+                            UseShellExecute = true // Asegura que corra correctamente en el entorno de Windows
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"No se pudo iniciar el actualizador: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró el archivo actualizador (DownFile.exe).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            #endregion
+
+        }
+
+        #region METODO PARA VALIDAR LA ACTUALIZACION DEL EJECUTABLE
+        public bool ValidaActualizacion()
+        {
+            string rutaServerTxt = @"\\gabira1\sisgabweb\Valida.txt";
+            string rutaServerExe = @"\\gabira1\sisgabweb\SistemaEnvases.exe";
+            string rutaLocalExe = @"c:\sisgabweb\SistemaEnvases.exe";
+
+            try
+            {
+                // 1. Validamos que el archivo de control en el servidor exista
+                if (File.Exists(rutaServerTxt) && File.Exists(rutaServerExe) && File.Exists(rutaLocalExe))
+                {
+                    DateTime fechaLocal = File.GetLastWriteTime(rutaLocalExe);
+                    DateTime fechaServer = File.GetLastWriteTime(rutaServerExe);
+
+                    // 2. Comparamos fechas
+                    if (fechaServer > fechaLocal)
+                    {
+                        MessageBox.Show("Hay una versión más reciente. El sistema se cerrará para actualizarse.\n\nPor favor, vuelva a abrir el programa cuando finalice.",
+                                        "Actualización Disponible",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                        return true;
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                // Si la red se cae o el archivo está bloqueado, atrapamos el error para que no truene la app
+                Console.WriteLine($"Error al validar actualización: {ex.Message}");
+            }
+
+            return false;
+        }
+        #endregion
+
+
 
         private Boolean Acumula()
         {
