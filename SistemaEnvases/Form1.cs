@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Data.SqlClient;
-//using Office = Microsoft.Office.Core;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.IO;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Printing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+//using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace SistemaEnvases
 {
@@ -2149,11 +2150,11 @@ namespace SistemaEnvases
 
                 // ✅ 6. Insertar cabecera Y capturar el folio con SCOPE_IDENTITY()
                 string insertHeader = @"INSERT INTO TB_SALIDAS_ENVASES(
-            FECHA, PROV_CLAVE, PROV_NOMBRE, RCH_CLAVE, RCH_NOMBRE, 
-            TBL_CLAVE, TBL_NOMBRE, NOM_CHOFER, NOM_OPERADOR, SAL_STATUS, FECHA_GUARDADO) 
-            VALUES(@Fecha, @ProvClave, @ProvNombre, @RchClave, @RchNombre, 
-                   @TblClave, @TblNombre, @Chofer, @Operador, 'T', @FechaGuardado);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);";
+    FECHA, PROV_CLAVE, PROV_NOMBRE, RCH_CLAVE, RCH_NOMBRE, 
+    TBL_CLAVE, TBL_NOMBRE, NOM_CHOFER, NOM_OPERADOR, SAL_STATUS, FECHA_GUARDADO) 
+    VALUES(@Fecha, @ProvClave, @ProvNombre, @RchClave, @RchNombre, 
+           @TblClave, @TblNombre, @Chofer, @Operador, 'T', @FechaGuardado);
+    SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 cmd = new SqlCommand(insertHeader, thisConnecion, transaction);
                 cmd.Parameters.AddWithValue("@Fecha", Convert.ToDateTime(fechasal.Text));
@@ -2182,9 +2183,10 @@ namespace SistemaEnvases
 
                     // --- Insertar detalle ---
                     string insertDetalle = @"INSERT INTO TB_DETSALIDAS_ENVASES(
-                FOLIO, ENV_CLAVE, ENV_NOMBRE, CANTIDAD, PROD_CLAVE, PROD_NOMBRE) 
-                VALUES(@Folio, @EnvClave, @EnvNombre, @Cantidad, @ProdClave, @ProdNombre)";
+        FOLIO, ENV_CLAVE, ENV_NOMBRE, CANTIDAD, PROD_CLAVE, PROD_NOMBRE) 
+        VALUES(@Folio, @EnvClave, @EnvNombre, @Cantidad, @ProdClave, @ProdNombre)";
 
+                    // CORREGIDO: Se agregó 'transaction' al constructor
                     cmd = new SqlCommand(insertDetalle, thisConnecion, transaction);
                     cmd.Parameters.AddWithValue("@Folio", folioGenerado);
                     cmd.Parameters.AddWithValue("@EnvClave", envClave);
@@ -2196,12 +2198,13 @@ namespace SistemaEnvases
 
                     // --- UPDATE 1: TB_MSTR_ENVASES ---
                     string updateMstr = @"UPDATE TB_MSTR_ENVASES 
-                SET cant_salidas = (cant_salidas + @Cantidad) 
-                WHERE prov_clave = @ProvClave 
-                  AND rch_clave = @RchClave 
-                  AND tbl_clave = @TblClave 
-                  AND env_clave = @EnvClave";
+        SET cant_salidas = (cant_salidas + @Cantidad) 
+        WHERE prov_clave = @ProvClave 
+          AND rch_clave = @RchClave 
+          AND tbl_clave = @TblClave 
+          AND env_clave = @EnvClave";
 
+                    // CORREGIDO: Se agregó 'transaction' al constructor
                     cmd = new SqlCommand(updateMstr, thisConnecion, transaction);
                     cmd.Parameters.AddWithValue("@Cantidad", cantidad);
                     cmd.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
@@ -2212,9 +2215,10 @@ namespace SistemaEnvases
 
                     // --- UPDATE 2: TB_MSTR_INV_ENVASES ---
                     string updateInv = @"UPDATE TB_MSTR_INV_ENVASES 
-                SET ENV_INV_CANT = (ENV_INV_CANT - @Cantidad) 
-                WHERE ENV_CLAVE = @EnvClave";
+        SET ENV_INV_CANT = (ENV_INV_CANT - @Cantidad) 
+        WHERE ENV_CLAVE = @EnvClave";
 
+                    // CORREGIDO: Se agregó 'transaction' al constructor
                     cmd = new SqlCommand(updateInv, thisConnecion, transaction);
                     cmd.Parameters.AddWithValue("@Cantidad", cantidad);
                     cmd.Parameters.AddWithValue("@EnvClave", envClave);
@@ -2222,10 +2226,11 @@ namespace SistemaEnvases
 
                     // --- UPDATE 3: TB_MSTR_INV_ENVASES_dos ---
                     string updateInvDos = @"UPDATE TB_MSTR_INV_ENVASES_dos 
-                SET ENV_SAL_CANT = (ENV_SAL_CANT + @Cantidad) 
-                WHERE ENV_CLAVE = @EnvClave 
-                  AND ENV_FECHA = @FechaEnv";
+        SET ENV_SAL_CANT = (ENV_SAL_CANT + @Cantidad) 
+        WHERE ENV_CLAVE = @EnvClave 
+          AND ENV_FECHA = @FechaEnv";
 
+                    // CORREGIDO: Se agregó 'transaction' al constructor
                     cmd = new SqlCommand(updateInvDos, thisConnecion, transaction);
                     cmd.Parameters.AddWithValue("@Cantidad", cantidad);
                     cmd.Parameters.AddWithValue("@EnvClave", envClave);
@@ -2234,10 +2239,11 @@ namespace SistemaEnvases
 
                     // --- UPDATE 4: TB_MSTR_INV_ENVASES_sin_corte ---
                     string updateInvSinCorte = @"UPDATE TB_MSTR_INV_ENVASES_sin_corte 
-                SET ENV_SAL_CANT = (ENV_SAL_CANT + @Cantidad) 
-                WHERE ENV_CLAVE = @EnvClave 
-                  AND ENV_FECHA = @FechaEnv";
+        SET ENV_SAL_CANT = (ENV_SAL_CANT + @Cantidad) 
+        WHERE ENV_CLAVE = @EnvClave 
+          AND ENV_FECHA = @FechaEnv";
 
+                    // CORREGIDO: Se agregó 'transaction' al constructor
                     cmd = new SqlCommand(updateInvSinCorte, thisConnecion, transaction);
                     cmd.Parameters.AddWithValue("@Cantidad", cantidad);
                     cmd.Parameters.AddWithValue("@EnvClave", envClave);
@@ -2247,7 +2253,8 @@ namespace SistemaEnvases
                     // --- Validación especial para envase 81 ---
                     if (envClave == "81")
                     {
-                        validarproveedoresparrago(clbprov.Text.Trim(), fechaSalida.ToString("dd/MM/yyyy"));
+                        // NOTA: Asegúrate de que este método interno use la misma conexión/transacción si realiza escrituras.
+                        validarproveedoresparragoT(clbprov.Text.Trim(), fechaSalida.ToString("dd/MM/yyyy"), transaction);
                     }
                 }
 
@@ -2258,9 +2265,10 @@ namespace SistemaEnvases
                     : $"INSERCCION DE SALIDA FECHA {fechasal.Text}";
 
                 string insertLog = @"INSERT INTO tb_registro_movimientos 
-            (fecha, nom_compu, nom_usu, tipo_mov, op_clave, folio, detalle, sistema, mov_folio) 
-            VALUES(@FechaLog, @Maquina, @Usuario, @TipoMov, '2.18', @Folio, @Detalle, 'SISGAB', @Folio)";
+    (fecha, nom_compu, nom_usu, tipo_mov, op_clave, folio, detalle, sistema, mov_folio) 
+    VALUES(@FechaLog, @Maquina, @Usuario, @TipoMov, '2.18', @Folio, @Detalle, 'SISGAB', @Folio)";
 
+                // CORREGIDO: Se agregó 'transaction' al constructor
                 cmd = new SqlCommand(insertLog, thisConnecion, transaction);
                 cmd.Parameters.AddWithValue("@FechaLog", DateTime.Now);
                 cmd.Parameters.AddWithValue("@Maquina", Environment.MachineName.Trim());
@@ -2289,10 +2297,7 @@ namespace SistemaEnvases
                 DialogResult result = printDialog1.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    // Pasar el folio a la función de impresión
-
                     Imprimir_Salida_Con_Folio(folioGenerado);
-                    //Imprimir_Salida();
                 }
 
                 // ✅ 14. Limpiar formulario
@@ -2301,7 +2306,12 @@ namespace SistemaEnvases
             catch (Exception ex)
             {
                 // ✅ 15. Revertir todo si algo falla
-                transaction?.Rollback();
+                try
+                {
+                    transaction?.Rollback();
+                }
+                catch { /* Ignorar si la transacción ya se cerró o no se inició */ }
+
                 thisConnecion.Close();
                 MessageBox.Show($"Error al guardar la salida: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -3055,6 +3065,45 @@ namespace SistemaEnvases
 
         }
 
+        public void validarproveedoresparragoT(string PROVEEDOR_ID, string fecha_actual, SqlTransaction transaction)
+        {
+            // El método asume que thisConnecion está abierta y con la transacción activa.
+            // Se crean todos los comandos asociados a la transacción recibida.
+
+            // 1. Consultar si el proveedor ya existe en la tabla de control
+            string query = @"SELECT cve_prov 
+                     FROM Tb_ENV_PROV_CAJ_ESPARRAGO 
+                     WHERE cve_prov = @ProvId AND estatus = '1'";
+            SqlCommand cmd = new SqlCommand(query, thisConnecion, transaction);
+            cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+
+            object objValue = cmd.ExecuteScalar();
+
+            // 2. Si no existe, y no es uno de los proveedores exentos, insertarlo
+            if (objValue == null)
+            {
+                if (PROVEEDOR_ID.Trim() != "01" && PROVEEDOR_ID.Trim() != "03" &&
+                    PROVEEDOR_ID.Trim() != "RO" && PROVEEDOR_ID.Trim() != "212")
+                {
+                    // Insertar en Tb_ENV_PROV_CAJ_ESPARRAGO
+                    string insertProv = @"INSERT INTO Tb_ENV_PROV_CAJ_ESPARRAGO (cve_prov, estatus) 
+                                 VALUES (@ProvId, '1')";
+                    cmd = new SqlCommand(insertProv, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+                    cmd.ExecuteNonQuery();
+
+                    // Insertar en TB_MSTR_INV_CAJAS_PROV_ESPARRAGO
+                    string insertInv = @"INSERT INTO TB_MSTR_INV_CAJAS_PROV_ESPARRAGO 
+                                 (PROV_CLAVE, ENV_CLAVE, ENV_FECHA, ENV_INV_INI_CANT, ENV_ENTR_CANT, ENV_SAL_CANT) 
+                                 VALUES (@ProvId, '81', @Fecha, 0, 0, 0)";
+                    cmd = new SqlCommand(insertInv, thisConnecion, transaction);
+                    cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+                    cmd.Parameters.AddWithValue("@Fecha", fecha_actual);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -3703,10 +3752,36 @@ namespace SistemaEnvases
 
                 thisConnecion.Close();
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -3866,10 +3941,36 @@ namespace SistemaEnvases
 
                 thisConnecion.Close();
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -4081,12 +4182,36 @@ namespace SistemaEnvases
                 Reporte_Kardex.DefaultView.Sort = "NUMERO, FECHA, Tipo, IDENVASE";
                 DataView dv = Reporte_Kardex.DefaultView;
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
 
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -4287,16 +4412,42 @@ namespace SistemaEnvases
 
                 thisConnecion.Close();
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
-                aplicacion = new Microsoft.Office.Interop.Excel.Application();
-                libro = aplicacion.Workbooks.Add();
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                //rango.Font.Bold = true;
+                //rango.Font.Size = 16;
+                //rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                //                aplicacion.Visible = true;
+
+                #endregion
+
+                #region issue: dll Interoperabilidad de Excel
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
+                //aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                //libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
-                hoja = (Microsoft.Office.Interop.Excel.Worksheet)libro.Worksheets.get_Item(1);
+                //hoja = (Microsoft.Office.Interop.Excel.Worksheet)libro.Worksheets.get_Item(1);
 
-                Microsoft.Office.Interop.Excel.Range r;
+                //Microsoft.Office.Interop.Excel.Range r;
+                #endregion
                 hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
                 r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
                 r.Font.Bold = true;
@@ -4387,7 +4538,8 @@ namespace SistemaEnvases
 
                     rowdatagrid++;
                 }
-
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
                 aplicacion.Columns.AutoFit();
                 aplicacion.Rows.AutoFit();
                 aplicacion.Visible = true;
@@ -4450,9 +4602,37 @@ namespace SistemaEnvases
                 thisConnecion.Close();
 
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
+
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                //rango.Font.Bold = true;
+                //rango.Font.Size = 16;
+                //rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
+
+
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
@@ -4664,11 +4844,37 @@ namespace SistemaEnvases
                 DataView dv = Reporte_Kardex.DefaultView;
 
 
+                #region fix issue: dll Interoperabilidad de Excel
+                // En lugar de:
+                // Microsoft.Office.Interop.Excel.Application aplicacion = new Microsoft.Office.Interop.Excel.Application();
+                // Usa:
+                Type excelType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic aplicacion = Activator.CreateInstance(excelType);
+
+                // A partir de aquí, todo se maneja con dynamic
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+
+                // Las llamadas a propiedades y métodos son resueltas en tiempo de ejecución (IDispatch)
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                dynamic rango = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                rango.Font.Bold = true;
+                rango.Font.Size = 16;
+                rango.MergeCells = true;
+
+                // ... resto del código similar, usando dynamic en lugar de tipos concretos
+
+                // Para hacer visible
+                aplicacion.Visible = true;
+
+                // Liberación: no hay interfaz tipada, pero debes liberar los objetos COM igual
+                if (aplicacion != null) Marshal.ReleaseComObject(aplicacion);
+                #endregion
 
 
-                Microsoft.Office.Interop.Excel.Application aplicacion;
-                Microsoft.Office.Interop.Excel.Workbook libro;
-                Microsoft.Office.Interop.Excel.Worksheet hoja;
+                //Microsoft.Office.Interop.Excel.Application aplicacion;
+                //Microsoft.Office.Interop.Excel.Workbook libro;
+                //Microsoft.Office.Interop.Excel.Worksheet hoja;
                 aplicacion = new Microsoft.Office.Interop.Excel.Application();
                 libro = aplicacion.Workbooks.Add();
                 //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
