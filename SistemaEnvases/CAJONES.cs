@@ -60,13 +60,22 @@ namespace SistemaEnvases
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Microsoft.Office.Interop.Excel.Application aplicacion;
-            Microsoft.Office.Interop.Excel.Workbook libro;
-            Microsoft.Office.Interop.Excel.Worksheet hoja;
-            aplicacion = new Microsoft.Office.Interop.Excel.Application();
-            libro = aplicacion.Workbooks.Add();
-            //libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
-            hoja = (Microsoft.Office.Interop.Excel.Worksheet)libro.Worksheets.get_Item(1);
+            #region EXCEL CON TIPOS FUERTES
+            //Microsoft.Office.Interop.Excel.Application aplicacion;
+            //Microsoft.Office.Interop.Excel.Workbook libro;
+            //Microsoft.Office.Interop.Excel.Worksheet hoja;
+            //aplicacion = new Microsoft.Office.Interop.Excel.Application();
+            //libro = aplicacion.Workbooks.Add();
+            ////libro = aplicacion.Workbooks.Open(@"C:\\Reportes\Reporte_liquidaciones_esparrago.xls");
+            //hoja = (Microsoft.Office.Interop.Excel.Worksheet)libro.Worksheets.get_Item(1);
+            #endregion
+
+            #region EXCEL CON DYNAMIC
+            // Usamos dynamic para saltarnos el registro corrupto de Interop
+            dynamic aplicacion = Activator.CreateInstance(Type.GetTypeFromProgID("Excel.Application"));
+            dynamic libro = aplicacion.Workbooks.Add();
+            dynamic hoja = libro.Worksheets[1]; // Con dynamic puedes usar el índice [1] directamente
+            #endregion
 
             Microsoft.Office.Interop.Excel.Range r;
             hoja.Cells[2, 2] = "Comercializador GAB, S.A. de C.V.";
@@ -82,7 +91,7 @@ namespace SistemaEnvases
             string ruta = "c:\\SisGabWeb\\logo.png";
             //hoja.Shapes.AddPicture(ruta, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, 190, 0, 70, 70);
             hoja.Range[hoja.Cells[1, 4], hoja.Cells[4, 4]].Merge();
-            r = hoja.get_Range("D1", "D4");
+            r = hoja.Range("D1", "D4");
 
 
             if (reporteTipo == 1)

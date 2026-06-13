@@ -78,6 +78,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Mensaje";
             this.Text = "CORTE DE DIA";
+            this.Load += new System.EventHandler(this.Mensaje_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
