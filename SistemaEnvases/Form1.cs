@@ -6697,6 +6697,16 @@ namespace SistemaEnvases
 
 
 
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cortemanualprogress_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private Boolean Acumula()
         {
             Boolean Correcto = true;
