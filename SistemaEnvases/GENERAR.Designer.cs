@@ -66,6 +66,7 @@
             this.MinimizeBox = false;
             this.Name = "GENERAR";
             this.Text = "GENERAR REPORTE";
+            this.Load += new System.EventHandler(this.GENERAR_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

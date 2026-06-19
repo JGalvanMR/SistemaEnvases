@@ -152,6 +152,7 @@
             this.Controls.Add(this.reportegriddetcajESPARR);
             this.Name = "Form4";
             this.Text = "DETALLE DE ESPARRAGO";
+            this.Load += new System.EventHandler(this.Form4_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.reportegriddetcajESPARR)).EndInit();
             this.ResumeLayout(false);

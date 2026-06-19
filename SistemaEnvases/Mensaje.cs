@@ -15,5 +15,10 @@ namespace SistemaEnvases
         {
             InitializeComponent();
         }
+
+        private void Mensaje_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

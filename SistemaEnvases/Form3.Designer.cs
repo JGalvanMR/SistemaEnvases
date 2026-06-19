@@ -153,6 +153,7 @@
             this.Controls.Add(this.reportegriddetcaj);
             this.Name = "Form3";
             this.Text = "REPORTE DE CAJONES";
+            this.Load += new System.EventHandler(this.Form3_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.reportegriddetcaj)).EndInit();
             this.ResumeLayout(false);
