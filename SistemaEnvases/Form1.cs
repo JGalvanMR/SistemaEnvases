@@ -111,6 +111,18 @@ namespace SistemaEnvases
         public string Actualizar = "";
         private bool requiereActualizar = false;
 
+        #region VARIABLES PARA REPORTES
+        private DataTable proveedoresINI = new DataTable();
+        private DataTable ranchosINI = new DataTable();
+        private DataTable tablasINI = new DataTable();
+        private DataTable proveedoresFIN = new DataTable();
+        private DataTable ranchosFIN = new DataTable();
+        private DataTable tablasFIN = new DataTable();
+        //private DataTable variedad;
+        //private DataTable lineas;
+        //private DataTable productos;
+        #endregion
+
         public Form1()
         {
             InitializeComponent();
@@ -1513,8 +1525,6 @@ namespace SistemaEnvases
         private void button4_Click(object sender, EventArgs e)
         {
             Limpiar_Salida();
-
-
         }
 
         private void Limpiar_Salida()
@@ -4236,7 +4246,7 @@ namespace SistemaEnvases
             }
         }
 
-        private void button15_Click(object sender, EventArgs e)
+        private void button15_ClickLEGACY(object sender, EventArgs e)
         {
             GENERAR FormMENSAJE = new GENERAR();
 
@@ -4844,6 +4854,645 @@ namespace SistemaEnvases
 
             }
 
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            GENERAR FormMENSAJE = new GENERAR();
+
+            if (clbenvrep.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Debe Seleccionar un Envase para Esta Operación");
+                return;
+            }
+
+            string clave_envase = clbenvrep.Text.Trim();
+
+            // =========================================================================
+            // 1. EVALUACIÓN DE FILTROS DINÁMICOS COMPATIBLE CON .NET 4.0
+            // =========================================================================
+            bool tieneProv = txtprovini != null && !string.IsNullOrWhiteSpace(txtprovini.Text);
+            bool tieneRch = txtrchini != null && !string.IsNullOrWhiteSpace(txtrchini.Text);
+            bool tieneTbl = txttblini != null && !string.IsNullOrWhiteSpace(txttblini.Text);
+
+            string filtrosAdicionalesEntradas = "";
+            string filtrosAdicionalesSalidas = "";
+
+            // Construimos los fragmentos de SQL si los campos tienen información
+            if (tieneProv)
+            {
+                filtrosAdicionalesEntradas += " AND TB_ENTRADAS_ENVASES.PROV_CLAVE = '" + txtprovini.Text.Trim() + "'";
+                filtrosAdicionalesSalidas += " AND TB_SALIDAS_ENVASES.PROV_CLAVE = '" + txtprovini.Text.Trim() + "'";
+            }
+            if (tieneRch)
+            {
+                filtrosAdicionalesEntradas += " AND TB_ENTRADAS_ENVASES.RCH_CLAVE = '" + txtrchini.Text.Trim() + "'";
+                filtrosAdicionalesSalidas += " AND TB_SALIDAS_ENVASES.RCH_CLAVE = '" + txtrchini.Text.Trim() + "'";
+            }
+            if (tieneTbl)
+            {
+                filtrosAdicionalesEntradas += " AND TB_ENTRADAS_ENVASES.TBL_CLAVE = '" + txttblini.Text.Trim() + "'";
+                filtrosAdicionalesSalidas += " AND TB_SALIDAS_ENVASES.TBL_CLAVE = '" + txttblini.Text.Trim() + "'";
+            }
+            // =========================================================================
+
+            Reporte_Entradas.Clear();
+            Reporte_Salidas.Clear();
+            Reporte_Kardex.Clear();
+
+            if (radioButton1.Checked == true)
+            {
+                FormMENSAJE.Show();
+                thisConnecion.Open();
+
+                // 2. Aplicamos la variable de filtros en la consulta de Entradas
+                string query = "SELECT * FROM TB_ENTRADAS_ENVASES INNER JOIN TB_DETENTRADAS_ENVASES ON TB_ENTRADAS_ENVASES.FOLIO = TB_DETENTRADAS_ENVASES.FOLIO WHERE TB_ENTRADAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(FechaInirepo.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(FechaFinrepo.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE = '" + clave_envase + "' " + filtrosAdicionalesEntradas + " ORDER BY FECHA, ENV_CLAVE";
+
+                SqlCommand cm = new SqlCommand(query, thisConnecion);
+                SqlDataReader dr = cm.ExecuteReader();
+
+                int totalent = 0;
+
+                while (dr.Read())
+                {
+                    DataRow rowi = Reporte_Entradas.NewRow();
+                    rowi["FOLIO"] = Convert.ToString(dr["FOLIO"]).Trim();
+                    rowi["FECHA"] = Convert.ToDateTime(dr["FECHA"]).ToString("dd/MM/yyyy");
+                    rowi["PROVEEDOR_CLAVE"] = Convert.ToString(dr["PROV_CLAVE"]).Trim();
+                    rowi["PROVEEDOR_NOMBRE"] = Convert.ToString(dr["PROV_NOMBRE"]).Trim();
+                    rowi["RANCHO_CLAVE"] = Convert.ToString(dr["RCH_CLAVE"]).Trim();
+                    rowi["RANCHO_NOMBRE"] = Convert.ToString(dr["RCH_NOMBRE"]).Trim();
+                    rowi["TABLA_CLAVE"] = Convert.ToString(dr["TBL_CLAVE"]).Trim();
+                    rowi["TABLA_NOMBRE"] = Convert.ToString(dr["TBL_NOMBRE"]).Trim();
+                    rowi["IDENVASE"] = Convert.ToString(dr["ENV_CLAVE"]).Trim();
+                    rowi["NOMBREENVASE"] = Convert.ToString(dr["ENV_NOMBRE"]).Trim();
+                    rowi["CANTIDAD"] = Convert.ToString(dr["CANTIDAD"]).Trim();
+                    rowi["PROD_CLAVE"] = Convert.ToString(dr["PROD_CLAVE"]).Trim();
+                    rowi["PROD_NOMBRE"] = Convert.ToString(dr["PROD_NOMBRE"]).Trim();
+                    rowi["RECIBO_MP"] = Convert.ToString(dr["RMP_FOLIO"]).Trim();
+                    rowi["ESTATUS"] = Convert.ToString(dr["ENT_STATUS"]).Trim();
+                    Reporte_Entradas.Rows.Add(rowi);
+
+                    if (Convert.ToString(dr["ENT_STATUS"]).Trim() != "C")
+                    {
+                        totalent = totalent + Convert.ToInt32(dr["CANTIDAD"]);
+                    }
+                }
+
+                DataRow rowix = Reporte_Entradas.NewRow();
+                rowix["FOLIO"] = "";
+                rowix["FECHA"] = "";
+                rowix["PROVEEDOR_CLAVE"] = "";
+                rowix["PROVEEDOR_NOMBRE"] = "";
+                rowix["RANCHO_CLAVE"] = "";
+                rowix["RANCHO_NOMBRE"] = "";
+                rowix["TABLA_CLAVE"] = "";
+                rowix["TABLA_NOMBRE"] = "";
+                rowix["IDENVASE"] = "";
+                rowix["NOMBREENVASE"] = "TOTAL";
+                rowix["CANTIDAD"] = totalent;
+                rowix["PROD_CLAVE"] = "";
+                rowix["PROD_NOMBRE"] = "";
+                rowix["RECIBO_MP"] = "";
+                rowix["ESTATUS"] = "";
+                Reporte_Entradas.Rows.Add(rowix);
+
+                thisConnecion.Close();
+
+                #region EXCEL CON DYNAMIC
+                dynamic aplicacion = Activator.CreateInstance(Type.GetTypeFromProgID("Excel.Application"));
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+                #endregion
+
+                Microsoft.Office.Interop.Excel.Range r;
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                r.Font.Bold = true;
+                r.Font.Size = 16;
+                r.MergeCells = true;
+
+                hoja.Cells[3, 3] = "REPORTE GENERAL DE ENTRADAS DE ENVASES DEL " + FechaInirepo.Text + " AL " + FechaFinrepo.Text;
+                r = hoja.Range[hoja.Cells[3, 3], hoja.Cells[3, 8]];
+                r.Font.Bold = true;
+                r.MergeCells = true;
+
+                #region logo
+                string ruta = "c:\\SisGabWeb\\logo.png";
+
+                // 1. Obtenemos las celdas por separado para medir el ancho real antes del merge
+                dynamic celdaA1 = hoja.Cells[1, 1];
+                dynamic celdaB1 = hoja.Cells[1, 2];
+
+                // 2. El ancho real es la suma del ancho de la columna A y la columna B
+                //float anchoTotalMerge = (float)celdaA1.Width + (float)celdaB1.Width;
+                float anchoTotalMerge = (float)celdaB1.Width;
+
+                // 3. Definimos el rango y ahora sí lo combinamos
+                dynamic rangoDestino = hoja.Range[celdaB1, hoja.Cells[4, 2]];
+                rangoDestino.Merge();
+
+                // 4. Medidas de la imagen
+                float anchoImagen = 55;
+                float altoImagen = 55;
+
+                // 5. El cálculo matemático usando el ANCHO REAL SUMADO
+                float posicionLeft = (float)((anchoTotalMerge - anchoImagen) / 2) + (float)rangoDestino.Left;
+                float posicionTop = (float)((rangoDestino.Height - altoImagen) / 2) + (float)rangoDestino.Top;
+
+                // 6. Insertamos la imagen perfectamente centrada
+                hoja.Shapes.AddPicture(ruta, 0, 1, posicionLeft, posicionTop, anchoImagen, altoImagen);
+                #endregion
+
+                r = hoja.Range("D1", "D3");
+
+
+                hoja.Cells[6, 1] = "Folio";
+                hoja.Cells[6, 2] = "Fecha";
+                hoja.Cells[6, 3] = "Clave Proveedor";
+                hoja.Cells[6, 4] = "Nombre Proveedor";
+                hoja.Cells[6, 5] = "Clave Rancho";
+                hoja.Cells[6, 6] = "Nombre Rancho";
+                hoja.Cells[6, 7] = "Clave Tabla";
+                hoja.Cells[6, 8] = "Nombre Tabla";
+                hoja.Cells[6, 9] = "Envase Clave";
+                hoja.Cells[6, 10] = "Envase Nombre";
+                hoja.Cells[6, 11] = "Cantidad";
+                hoja.Cells[6, 12] = "Producto Clave";
+                hoja.Cells[6, 13] = "producto Nombre";
+                hoja.Cells[6, 14] = "Recibo MP";
+
+                r = hoja.Range[hoja.Cells[6, 1], hoja.Cells[6, 14]];
+                r.Font.Bold = true;
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                r = hoja.Range[hoja.Cells[7, 3], hoja.Cells[Reporte_Entradas.Rows.Count + 10, 14]];
+                r.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+
+                int filaactual = 7;
+                foreach (DataRow row in Reporte_Entradas.Rows)
+                {
+                    hoja.Cells[filaactual, 1] = row[0];
+                    hoja.Cells[filaactual, 2] = row[1];
+                    hoja.Cells[filaactual, 3] = row[2];
+                    hoja.Cells[filaactual, 4] = row[3];
+                    hoja.Cells[filaactual, 5] = row[4];
+                    hoja.Cells[filaactual, 6] = row[5];
+                    hoja.Cells[filaactual, 7] = row[6];
+                    hoja.Cells[filaactual, 8] = row[7];
+                    hoja.Cells[filaactual, 9] = row[8];
+                    hoja.Cells[filaactual, 10] = row[9];
+                    hoja.Cells[filaactual, 11] = row[10];
+                    hoja.Cells[filaactual, 12] = row[11];
+                    hoja.Cells[filaactual, 13] = row[12];
+                    hoja.Cells[filaactual, 14] = row[13];
+
+                    filaactual++;
+                }
+
+                int rowdatagrid = 7;
+                foreach (DataRow row in Reporte_Entradas.Rows)
+                {
+                    string dato = Convert.ToString(row["ESTATUS"]);
+                    if (dato == "C")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 14]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                        r.Font.Bold = true;
+                    }
+
+                    string datoenvase = Convert.ToString(row["NOMBREENVASE"]);
+                    if (datoenvase == "TOTAL")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 14]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LawnGreen);
+                        r.Font.Bold = true;
+                    }
+
+                    rowdatagrid++;
+                }
+
+                aplicacion.Columns.AutoFit();
+                aplicacion.Rows.AutoFit();
+                aplicacion.Visible = true;
+
+                FormMENSAJE.Close();
+            }
+            else if (radioButton2.Checked == true)
+            {
+                FormMENSAJE.Show();
+                thisConnecion.Open();
+
+                // 3. Aplicamos la variable de filtros en la consulta de Salidas
+                string query = "SELECT * FROM TB_SALIDAS_ENVASES INNER JOIN TB_DETSALIDAS_ENVASES ON TB_SALIDAS_ENVASES.FOLIO = TB_DETSALIDAS_ENVASES.FOLIO WHERE TB_SALIDAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(FechaInirepo.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(FechaFinrepo.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE = '" + clave_envase + "' " + filtrosAdicionalesSalidas + " ORDER BY FECHA, ENV_CLAVE";
+
+                SqlCommand cm = new SqlCommand(query, thisConnecion);
+                SqlDataReader dr = cm.ExecuteReader();
+
+                int totalsal = 0;
+
+                while (dr.Read())
+                {
+                    DataRow rowi = Reporte_Salidas.NewRow();
+                    rowi["FOLIO"] = Convert.ToString(dr["FOLIO"]).Trim();
+                    rowi["FECHA"] = Convert.ToDateTime(dr["FECHA"]).ToString("dd/MM/yyyy");
+                    rowi["PROVEEDOR_CLAVE"] = Convert.ToString(dr["PROV_CLAVE"]).Trim();
+                    rowi["PROVEEDOR_NOMBRE"] = Convert.ToString(dr["PROV_NOMBRE"]).Trim();
+                    rowi["RANCHO_CLAVE"] = Convert.ToString(dr["RCH_CLAVE"]).Trim();
+                    rowi["RANCHO_NOMBRE"] = Convert.ToString(dr["RCH_NOMBRE"]).Trim();
+                    rowi["TABLA_CLAVE"] = Convert.ToString(dr["TBL_CLAVE"]).Trim();
+                    rowi["TABLA_NOMBRE"] = Convert.ToString(dr["TBL_NOMBRE"]).Trim();
+                    rowi["IDENVASE"] = Convert.ToString(dr["ENV_CLAVE"]).Trim();
+                    rowi["NOMBREENVASE"] = Convert.ToString(dr["ENV_NOMBRE"]).Trim();
+                    rowi["CANTIDAD"] = Convert.ToString(dr["CANTIDAD"]).Trim();
+                    rowi["PROD_CLAVE"] = Convert.ToString(dr["PROD_CLAVE"]).Trim();
+                    rowi["PROD_NOMBRE"] = Convert.ToString(dr["PROD_NOMBRE"]).Trim();
+                    rowi["ESTATUS"] = Convert.ToString(dr["SAL_STATUS"]).Trim();
+                    Reporte_Salidas.Rows.Add(rowi);
+
+                    if (Convert.ToString(dr["SAL_STATUS"]).Trim() != "C")
+                    {
+                        totalsal = totalsal + Convert.ToInt32(dr["CANTIDAD"]);
+                    }
+                }
+
+                DataRow rowix = Reporte_Salidas.NewRow();
+                rowix["FOLIO"] = "";
+                rowix["FECHA"] = "";
+                rowix["PROVEEDOR_CLAVE"] = "";
+                rowix["PROVEEDOR_NOMBRE"] = "";
+                rowix["RANCHO_CLAVE"] = "";
+                rowix["RANCHO_NOMBRE"] = "";
+                rowix["TABLA_CLAVE"] = "";
+                rowix["TABLA_NOMBRE"] = "";
+                rowix["IDENVASE"] = "";
+                rowix["NOMBREENVASE"] = "TOTAL";
+                rowix["CANTIDAD"] = totalsal;
+                rowix["PROD_CLAVE"] = "";
+                rowix["PROD_NOMBRE"] = "";
+                rowix["ESTATUS"] = "";
+                Reporte_Salidas.Rows.Add(rowix);
+
+                thisConnecion.Close();
+
+                #region EXCEL CON DYNAMIC
+                dynamic aplicacion = Activator.CreateInstance(Type.GetTypeFromProgID("Excel.Application"));
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+                #endregion
+
+                Microsoft.Office.Interop.Excel.Range r;
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                r.Font.Bold = true;
+                r.Font.Size = 16;
+                r.MergeCells = true;
+
+                hoja.Cells[3, 3] = "REPORTE GENERAL DE SALIDAS DE ENVASES DEL " + FechaInirepo.Text + " AL " + FechaFinrepo.Text;
+                r = hoja.Range[hoja.Cells[3, 3], hoja.Cells[3, 8]];
+                r.Font.Bold = true;
+                r.MergeCells = true;
+
+                #region logo
+                string ruta = "c:\\SisGabWeb\\logo.png";
+
+                // 1. Obtenemos las celdas por separado para medir el ancho real antes del merge
+                dynamic celdaA1 = hoja.Cells[1, 1];
+                dynamic celdaB1 = hoja.Cells[1, 2];
+
+                // 2. El ancho real es la suma del ancho de la columna A y la columna B
+                //float anchoTotalMerge = (float)celdaA1.Width + (float)celdaB1.Width;
+                float anchoTotalMerge = (float)celdaB1.Width;
+
+                // 3. Definimos el rango y ahora sí lo combinamos
+                dynamic rangoDestino = hoja.Range[celdaB1, hoja.Cells[4, 2]];
+                rangoDestino.Merge();
+
+                // 4. Medidas de la imagen
+                float anchoImagen = 55;
+                float altoImagen = 55;
+
+                // 5. El cálculo matemático usando el ANCHO REAL SUMADO
+                float posicionLeft = (float)((anchoTotalMerge - anchoImagen) / 2) + (float)rangoDestino.Left;
+                float posicionTop = (float)((rangoDestino.Height - altoImagen) / 2) + (float)rangoDestino.Top;
+
+                // 6. Insertamos la imagen perfectamente centrada
+                hoja.Shapes.AddPicture(ruta, 0, 1, posicionLeft, posicionTop, anchoImagen, altoImagen);
+                #endregion
+
+                r = hoja.Range("D1", "D3");
+
+                hoja.Cells[6, 1] = "Folio";
+                hoja.Cells[6, 2] = "Fecha";
+                hoja.Cells[6, 3] = "Clave Proveedor";
+                hoja.Cells[6, 4] = "Nombre Proveedor";
+                hoja.Cells[6, 5] = "Clave Rancho";
+                hoja.Cells[6, 6] = "Nombre Rancho";
+                hoja.Cells[6, 7] = "Clave Tabla";
+                hoja.Cells[6, 8] = "Nombre Tabla";
+                hoja.Cells[6, 9] = "Envase Clave";
+                hoja.Cells[6, 10] = "Envase Nombre";
+                hoja.Cells[6, 11] = "Cantidad";
+                hoja.Cells[6, 12] = "Producto Clave";
+                hoja.Cells[6, 13] = "producto Nombre";
+
+                r = hoja.Range[hoja.Cells[6, 1], hoja.Cells[6, 14]];
+                r.Font.Bold = true;
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                r = hoja.Range[hoja.Cells[7, 3], hoja.Cells[Reporte_Salidas.Rows.Count + 10, 13]];
+                r.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+
+                int filaactual = 7;
+                foreach (DataRow row in Reporte_Salidas.Rows)
+                {
+                    hoja.Cells[filaactual, 1] = row[0];
+                    hoja.Cells[filaactual, 2] = row[1];
+                    hoja.Cells[filaactual, 3] = row[2];
+                    hoja.Cells[filaactual, 4] = row[3];
+                    hoja.Cells[filaactual, 5] = row[4];
+                    hoja.Cells[filaactual, 6] = row[5];
+                    hoja.Cells[filaactual, 7] = row[6];
+                    hoja.Cells[filaactual, 8] = row[7];
+                    hoja.Cells[filaactual, 9] = row[8];
+                    hoja.Cells[filaactual, 10] = row[9];
+                    hoja.Cells[filaactual, 11] = row[10];
+                    hoja.Cells[filaactual, 12] = row[11];
+                    hoja.Cells[filaactual, 13] = row[12];
+
+                    filaactual++;
+                }
+
+                int rowdatagrid = 7;
+                foreach (DataRow row in Reporte_Salidas.Rows)
+                {
+                    string dato = Convert.ToString(row["ESTATUS"]);
+                    if (dato == "C")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 13]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                        r.Font.Bold = true;
+                    }
+
+                    string datoenvase = Convert.ToString(row["NOMBREENVASE"]);
+                    if (datoenvase == "TOTAL")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 13]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LawnGreen);
+                        r.Font.Bold = true;
+                    }
+
+                    rowdatagrid++;
+                }
+
+                aplicacion.Columns.AutoFit();
+                aplicacion.Rows.AutoFit();
+                aplicacion.Visible = true;
+
+                FormMENSAJE.Close();
+            }
+            else
+            {
+                FormMENSAJE.Show();
+                thisConnecion.Open();
+
+                // 4. Aplicamos los filtros adicionales tanto en Entradas como en Salidas para el Kardex
+                string query = "SELECT * FROM TB_ENTRADAS_ENVASES INNER JOIN TB_DETENTRADAS_ENVASES ON TB_ENTRADAS_ENVASES.FOLIO = TB_DETENTRADAS_ENVASES.FOLIO WHERE TB_ENTRADAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(FechaInirepo.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(FechaFinrepo.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE = '" + clave_envase + "' " + filtrosAdicionalesEntradas + " ORDER BY FECHA, ENV_CLAVE";
+
+                SqlCommand cm = new SqlCommand(query, thisConnecion);
+                SqlDataReader dr = cm.ExecuteReader();
+
+                int totalent = 0;
+
+                while (dr.Read())
+                {
+                    DataRow rowi = Reporte_Kardex.NewRow();
+                    rowi["NUMERO"] = 0;
+                    rowi["FOLIO"] = Convert.ToString(dr["FOLIO"]).Trim();
+                    rowi["FECHA"] = Convert.ToDateTime(dr["FECHA"]).ToString("dd/MM/yyyy");
+                    rowi["PROVEEDOR_CLAVE"] = Convert.ToString(dr["PROV_CLAVE"]).Trim();
+                    rowi["PROVEEDOR_NOMBRE"] = Convert.ToString(dr["PROV_NOMBRE"]).Trim();
+                    rowi["RANCHO_CLAVE"] = Convert.ToString(dr["RCH_CLAVE"]).Trim();
+                    rowi["RANCHO_NOMBRE"] = Convert.ToString(dr["RCH_NOMBRE"]).Trim();
+                    rowi["TABLA_CLAVE"] = Convert.ToString(dr["TBL_CLAVE"]).Trim();
+                    rowi["TABLA_NOMBRE"] = Convert.ToString(dr["TBL_NOMBRE"]).Trim();
+                    rowi["IDENVASE"] = Convert.ToString(dr["ENV_CLAVE"]).Trim();
+                    rowi["NOMBREENVASE"] = Convert.ToString(dr["ENV_NOMBRE"]).Trim();
+                    rowi["CANTIDAD"] = Convert.ToString(dr["CANTIDAD"]).Trim();
+                    rowi["PROD_CLAVE"] = Convert.ToString(dr["PROD_CLAVE"]).Trim();
+                    rowi["PROD_NOMBRE"] = Convert.ToString(dr["PROD_NOMBRE"]).Trim();
+                    rowi["RECIBO_MP"] = Convert.ToString(dr["RMP_FOLIO"]).Trim();
+                    rowi["TIPO"] = "ENTRADA";
+                    rowi["ESTATUS"] = Convert.ToString(dr["ENT_STATUS"]).Trim();
+                    Reporte_Kardex.Rows.Add(rowi);
+
+                    if (Convert.ToString(dr["ENT_STATUS"]).Trim() != "C")
+                    {
+                        totalent = totalent + Convert.ToInt32(dr["CANTIDAD"]);
+                    }
+                }
+
+                thisConnecion.Close();
+
+                // Ingresar Salidas Kardex con filtros dinámicos
+                thisConnecion.Open();
+                query = "SELECT * FROM TB_SALIDAS_ENVASES INNER JOIN TB_DETSALIDAS_ENVASES ON TB_SALIDAS_ENVASES.FOLIO = TB_DETSALIDAS_ENVASES.FOLIO WHERE TB_SALIDAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(FechaInirepo.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(FechaFinrepo.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE = '" + clave_envase + "' " + filtrosAdicionalesSalidas + " ORDER BY FECHA, ENV_CLAVE";
+
+                cm = new SqlCommand(query, thisConnecion);
+                dr = cm.ExecuteReader();
+
+                int totalsal = 0;
+
+                while (dr.Read())
+                {
+                    DataRow rowi = Reporte_Kardex.NewRow();
+                    rowi["NUMERO"] = 0;
+                    rowi["FOLIO"] = Convert.ToString(dr["FOLIO"]).Trim();
+                    rowi["FECHA"] = Convert.ToDateTime(dr["FECHA"]).ToString("dd/MM/yyyy");
+                    rowi["PROVEEDOR_CLAVE"] = Convert.ToString(dr["PROV_CLAVE"]).Trim();
+                    rowi["PROVEEDOR_NOMBRE"] = Convert.ToString(dr["PROV_NOMBRE"]).Trim();
+                    rowi["RANCHO_CLAVE"] = Convert.ToString(dr["RCH_CLAVE"]).Trim();
+                    rowi["RANCHO_NOMBRE"] = Convert.ToString(dr["RCH_NOMBRE"]).Trim();
+                    rowi["TABLA_CLAVE"] = Convert.ToString(dr["TBL_CLAVE"]).Trim();
+                    rowi["TABLA_NOMBRE"] = Convert.ToString(dr["TBL_NOMBRE"]).Trim();
+                    rowi["IDENVASE"] = Convert.ToString(dr["ENV_CLAVE"]).Trim();
+                    rowi["NOMBREENVASE"] = Convert.ToString(dr["ENV_NOMBRE"]).Trim();
+                    rowi["CANTIDAD"] = Convert.ToString(dr["CANTIDAD"]).Trim();
+                    rowi["PROD_CLAVE"] = Convert.ToString(dr["PROD_CLAVE"]).Trim();
+                    rowi["PROD_NOMBRE"] = Convert.ToString(dr["PROD_NOMBRE"]).Trim();
+                    rowi["RECIBO_MP"] = "";
+                    rowi["TIPO"] = "SALIDA";
+                    rowi["ESTATUS"] = Convert.ToString(dr["SAL_STATUS"]).Trim();
+                    Reporte_Kardex.Rows.Add(rowi);
+
+                    if (Convert.ToString(dr["SAL_STATUS"]).Trim() != "C")
+                    {
+                        totalsal = totalsal + Convert.ToInt32(dr["CANTIDAD"]);
+                    }
+                }
+
+                DataRow rowix = Reporte_Kardex.NewRow();
+                rowix["NUMERO"] = 1;
+                rowix["FOLIO"] = "";
+                rowix["FECHA"] = "";
+                rowix["PROVEEDOR_CLAVE"] = "";
+                rowix["PROVEEDOR_NOMBRE"] = "";
+                rowix["RANCHO_CLAVE"] = "TOTALES";
+                rowix["RANCHO_NOMBRE"] = "";
+                rowix["TABLA_CLAVE"] = "ENTRADAS";
+                rowix["TABLA_NOMBRE"] = totalent;
+                rowix["IDENVASE"] = "";
+                rowix["NOMBREENVASE"] = "SALIDAS";
+                rowix["CANTIDAD"] = totalsal;
+                rowix["PROD_CLAVE"] = "";
+                rowix["PROD_NOMBRE"] = "";
+                rowix["RECIBO_MP"] = "";
+                rowix["TIPO"] = "";
+                rowix["ESTATUS"] = "";
+                Reporte_Kardex.Rows.Add(rowix);
+
+                thisConnecion.Close();
+
+                Reporte_Kardex.DefaultView.Sort = "NUMERO, FECHA, Tipo, IDENVASE";
+                DataView dv = Reporte_Kardex.DefaultView;
+
+                #region EXCEL CON DYNAMIC
+                dynamic aplicacion = Activator.CreateInstance(Type.GetTypeFromProgID("Excel.Application"));
+                dynamic libro = aplicacion.Workbooks.Add();
+                dynamic hoja = libro.Worksheets[1];
+                #endregion
+
+                Microsoft.Office.Interop.Excel.Range r;
+                hoja.Cells[2, 3] = "Comercializador GAB, S.A. de C.V.";
+                r = hoja.Range[hoja.Cells[2, 3], hoja.Cells[2, 8]];
+                r.Font.Bold = true;
+                r.Font.Size = 16;
+                r.MergeCells = true;
+
+                hoja.Cells[3, 3] = "REPORTE GENERAL DE ENTRADAS Y SALIDAS DE ENVASES DEL " + FechaInirepo.Text + " AL " + FechaFinrepo.Text;
+                r = hoja.Range[hoja.Cells[3, 3], hoja.Cells[3, 8]];
+                r.Font.Bold = true;
+                r.MergeCells = true;
+
+                #region logo
+                string ruta = "c:\\SisGabWeb\\logo.png";
+
+                // 1. Obtenemos las celdas por separado para medir el ancho real antes del merge
+                dynamic celdaA1 = hoja.Cells[1, 1];
+                dynamic celdaB1 = hoja.Cells[1, 2];
+
+                // 2. El ancho real es la suma del ancho de la columna A y la columna B
+                //float anchoTotalMerge = (float)celdaA1.Width + (float)celdaB1.Width;
+                float anchoTotalMerge = (float)celdaB1.Width;
+
+                // 3. Definimos el rango y ahora sí lo combinamos
+                dynamic rangoDestino = hoja.Range[celdaB1, hoja.Cells[4, 2]];
+                rangoDestino.Merge();
+
+                // 4. Medidas de la imagen
+                float anchoImagen = 55;
+                float altoImagen = 55;
+
+                // 5. El cálculo matemático usando el ANCHO REAL SUMADO
+                float posicionLeft = (float)((anchoTotalMerge - anchoImagen) / 2) + (float)rangoDestino.Left;
+                float posicionTop = (float)((rangoDestino.Height - altoImagen) / 2) + (float)rangoDestino.Top;
+
+                // 6. Insertamos la imagen perfectamente centrada
+                hoja.Shapes.AddPicture(ruta, 0, 1, posicionLeft, posicionTop, anchoImagen, altoImagen);
+                #endregion
+
+                r = hoja.Range("D1", "D3");
+
+                hoja.Cells[6, 1] = "Folio";
+                hoja.Cells[6, 2] = "Fecha";
+                hoja.Cells[6, 3] = "Clave Proveedor";
+                hoja.Cells[6, 4] = "Nombre Proveedor";
+                hoja.Cells[6, 5] = "Clave Rancho";
+                hoja.Cells[6, 6] = "Nombre Rancho";
+                hoja.Cells[6, 7] = "Clave Tabla";
+                hoja.Cells[6, 8] = "Nombre Tabla";
+                hoja.Cells[6, 9] = "Envase Clave";
+                hoja.Cells[6, 10] = "Envase Nombre";
+                hoja.Cells[6, 11] = "Cantidad";
+                hoja.Cells[6, 12] = "Producto Clave";
+                hoja.Cells[6, 13] = "producto Nombre";
+                hoja.Cells[6, 14] = "Recibo MP";
+                hoja.Cells[6, 15] = "TIPO MOVIMIENTO";
+
+                r = hoja.Range[hoja.Cells[6, 1], hoja.Cells[6, 15]];
+                r.Font.Bold = true;
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                r = hoja.Range[hoja.Cells[7, 3], hoja.Cells[Reporte_Kardex.Rows.Count + 10, 15]];
+                r.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+
+                int filaactual = 7;
+                foreach (DataRowView row in dv)
+                {
+                    hoja.Cells[filaactual, 1] = row[1];
+                    hoja.Cells[filaactual, 2] = row[2];
+                    hoja.Cells[filaactual, 3] = row[3];
+                    hoja.Cells[filaactual, 4] = row[4];
+                    hoja.Cells[filaactual, 5] = row[5];
+                    hoja.Cells[filaactual, 6] = row[6];
+                    hoja.Cells[filaactual, 7] = row[7];
+                    hoja.Cells[filaactual, 8] = row[8];
+                    hoja.Cells[filaactual, 9] = row[9];
+                    hoja.Cells[filaactual, 10] = row[10];
+                    hoja.Cells[filaactual, 11] = row[11];
+                    hoja.Cells[filaactual, 12] = row[12];
+                    hoja.Cells[filaactual, 13] = row[13];
+                    hoja.Cells[filaactual, 14] = row[14];
+                    hoja.Cells[filaactual, 15] = row[15];
+
+                    filaactual++;
+                }
+
+                int rowdatagrid = 7;
+                foreach (DataRowView row in dv)
+                {
+                    string dato = Convert.ToString(row["ESTATUS"]);
+                    if (dato == "C")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 15]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                        r.Font.Bold = true;
+                    }
+
+                    string datotipo = Convert.ToString(row["TIPO"]);
+                    if (datotipo == "ENTRADA" && dato != "C")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 15]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGreen);
+                        r.Font.Bold = true;
+                    }
+                    else if (datotipo == "SALIDA" && dato != "C")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 15]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.IndianRed);
+                        r.Font.Bold = true;
+                    }
+
+                    string datoenvase = Convert.ToString(row["RANCHO_CLAVE"]);
+                    if (datoenvase == "TOTALES")
+                    {
+                        r = hoja.Range[hoja.Cells[rowdatagrid, 1], hoja.Cells[rowdatagrid, 15]];
+                        r.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LawnGreen);
+                        r.Font.Bold = true;
+                    }
+
+                    rowdatagrid++;
+                }
+
+                aplicacion.Columns.AutoFit();
+                aplicacion.Rows.AutoFit();
+                aplicacion.Visible = true;
+
+                FormMENSAJE.Close();
+            }
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -6352,18 +7001,22 @@ namespace SistemaEnvases
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            #region VALIDA Y FORZA ACTUALIZAR
             if (ValidaActualizacion())
             {
                 requiereActualizar = true;
-                this.Close(); // Cerramos el formulario para dar paso al actualizador
+                this.Close();
+                return;
             }
-            #endregion
-            if (tabControl1.SelectedIndex == 6) // captura de Inventario Fisico 
+
+            if (tabControl1.SelectedIndex == 6)
             {
-
+                // pendiente: confirmar comportamiento real requerido
             }
 
+            if (tabControl1.SelectedIndex == 2)
+            {
+                cargarCBProvIniReportes();
+            }
         }
 
         void dText_KeyPress(object sender, KeyPressEventArgs e)
@@ -6695,11 +7348,8 @@ namespace SistemaEnvases
         }
         #endregion
 
-
-
         private void tabPage3_Click(object sender, EventArgs e)
         {
-
         }
 
         private void cortemanualprogress_Click(object sender, EventArgs e)
@@ -6761,5 +7411,555 @@ namespace SistemaEnvases
             }
 
         }
+
+        #region CARGAR INFO DE PROVEEDORES, RANCHOS Y TABLAS PARA REPORTES
+        public void cargarCBProvIniReportes()
+        {
+            string consulta = @"
+SELECT '100' AS Numero, 
+       LTRIM(RTRIM(prov_clave)) AS prov_clave,
+       LTRIM(RTRIM(prov_nombre)) AS prov_nombre
+FROM vwProveedor
+WHERE prov_clave IN (
+    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_mp
+    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+)
+UNION
+SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
+FROM vwProveedor
+WHERE prov_clave IN (
+    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_pt
+    WHERE rpt_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+      AND rpt_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+)
+UNION
+SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
+FROM vwProveedor
+WHERE prov_clave IN (
+    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_esparrago
+    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+)
+ORDER BY prov_nombre ASC";
+
+            try
+            {
+                proveedoresINI = CargarTablaConSeleccion(consulta, null, "prov_clave", "prov_nombre");
+                ConfigurarCombo(CBProvini, proveedoresINI, "prov_nombre", "prov_clave");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar proveedores iniciales: " + ex.Message);
+            }
+        }
+
+        public void cargarCBProvFinReportes()
+        {
+            string consulta = @"
+SELECT '100' AS Numero, 
+       prov_clave AS provclavefin, 
+       CONCAT(RTRIM(prov_nombre), ' - ', RTRIM(prov_clave)) AS prov_nombre_fin 
+FROM tb_Cat_Proveedor 
+ORDER BY prov_Nombre";
+
+            try
+            {
+                proveedoresFIN = CargarTablaConSeleccion(consulta, null, "provclavefin", "prov_nombre_fin");
+                ConfigurarCombo(CBProvfin, proveedoresFIN, "prov_nombre_fin", "provclavefin");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar proveedores finales: " + ex.Message);
+            }
+        }
+
+        public void cargarCBRchIniReportes()
+        {
+            string proveedor = txtprovini.Text.Trim();
+            if (string.IsNullOrEmpty(proveedor))
+            {
+                ranchosINI = new DataTable(); // Vacío
+                ConfigurarCombo(CBRchini, ranchosINI, "rch_nombre", "rch_clave");
+                return;
+            }
+
+            string consulta = @"
+SELECT '100' AS Numero, 
+       LTRIM(RTRIM(rch_clave)) AS rch_clave,
+       LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(rch_nombre, CHAR(160),''), CHAR(9),''), CHAR(13),''))) AS rch_nombre 
+FROM vwRanchos 
+WHERE prov_clave = @prov_clave 
+ORDER BY rch_nombre ASC";
+
+            var parametros = new Dictionary<string, object> { { "@prov_clave", proveedor } };
+            try
+            {
+                ranchosINI = CargarTablaConSeleccion(consulta, parametros, "rch_clave", "rch_nombre",
+                                                     "Seleccione un Rancho", "Sin Ranchos Disponibles");
+                ConfigurarCombo(CBRchini, ranchosINI, "rch_nombre", "rch_clave");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar ranchos iniciales: " + ex.Message);
+            }
+        }
+
+        public void cargarCBRchFinReportes()
+        {
+            string proveedor = txtprovfin.Text.Trim();
+            if (string.IsNullOrEmpty(proveedor))
+            {
+                ranchosFIN = new DataTable();
+                ConfigurarCombo(CBRchfin, ranchosFIN, "rch_nombre", "rch_clave");
+                return;
+            }
+
+            string consulta = @"
+SELECT '100' AS Numero, rch_clave, rch_nombre  
+FROM tb_cat_ranchos 
+WHERE prov_clave = @prov_clave 
+ORDER BY rch_Nombre";
+
+            var parametros = new Dictionary<string, object> { { "@prov_clave", proveedor } };
+            try
+            {
+                ranchosFIN = CargarTablaConSeleccion(consulta, parametros, "rch_clave", "rch_nombre",
+                                                     "Seleccione un Rancho", "Sin Ranchos Disponibles");
+                ConfigurarCombo(CBRchfin, ranchosFIN, "rch_nombre", "rch_clave");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar ranchos finales: " + ex.Message);
+            }
+        }
+
+        public void cargarCBTblIniReportes()
+        {
+            string proveedor = txtprovini.Text.Trim();
+            string rancho = txtrchini.Text.Trim();
+
+            if (string.IsNullOrEmpty(proveedor) || string.IsNullOrEmpty(rancho))
+            {
+                tablasINI = new DataTable();
+                ConfigurarCombo(CBTblini, tablasINI, "tbl_nombre", "tbl_clave");
+                return;
+            }
+
+            string consulta = @"
+SELECT '100' AS Numero, tbl_clave, tbl_nombre 
+FROM tb_cat_tablas 
+WHERE prov_clave = @prov_clave AND rch_clave = @rch_clave 
+ORDER BY tbl_nombre";
+
+            var parametros = new Dictionary<string, object>
+    {
+        { "@prov_clave", proveedor },
+        { "@rch_clave", rancho }
+    };
+            try
+            {
+                tablasINI = CargarTablaConSeleccion(consulta, parametros, "tbl_clave", "tbl_nombre",
+                                                    "Seleccione una Tabla", "Sin Tablas Disponibles");
+                ConfigurarCombo(CBTblini, tablasINI, "tbl_nombre", "tbl_clave");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar tablas iniciales: " + ex.Message);
+            }
+        }
+
+        public void cargarCBTblFinReportes()
+        {
+            string proveedor = "";
+            string rancho = "";
+            proveedor = txtprovfin.Text.ToString().Trim();
+            rancho = txtrchfin.Text.ToString().Trim();
+            //Llenado de Combo Proveedor ********************************----*******************
+            thisConnecion.Open();
+            //string Cadena = "SELECT A.PDN_FOLIO,A.PDN_FECHA,A.PLACACAJA,B.prod_clave,B.pdn_num_unidades FROM TB_MSTR_PEDIDOS_NAL A, tb_det_pedidos B WHERE A.PDN_FECHA = '" + Program.MyGlobal.PubFecEmb + "' AND A.placacaja = '" + Program.MyGlobal.PubNoTrailer + "' AND A.PDN_FOLIO = B.PDN_FOLIO AND A.PDN_TIPO = B.PDN_TIPO " +
+            //                "UNION " +
+            //                "SELECT A.PDN_FOLIO,A.PDN_FECHA,A.PLACACAJA,B.prod_clave,B.pdn_num_unidades FROM TB_MSTR_PEDIDOS_NAL A, tb_det_pedidos B WHERE A.PDN_FECHA = '" + Program.MyGlobal.PubFecEmb + "' AND A.placacaja = '" + Program.MyGlobal.PubNoTrailer + "' AND A.PDN_FOLIO = B.PDN_FOLIO AND A.PDN_TIPO = B.PDN_TIPO " +
+            //                "ORDER BY PDN_FOLIO";
+            string Cadena = "SELECT '100' AS Numero, tbl_clave,tbl_nombre  FROM tb_cat_tablas WHERE prov_clave = '" + proveedor.ToString().Trim() + "' AND rch_clave = '" + rancho.ToString().Trim() + "' Order By tbl_nombre";
+            //string Cadena = "SELECT EMB_FOLIO FROM TB_MSTR_EMBARQUE WHERE HORA_TRAILER = '" + Program.MyGlobal.PubFecEmb + "' AND NO_TRAILER = '" + Program.MyGlobal.PubNoTrailer + "' ORDER BY EMB_FOLIO";
+            DataSet ds1 = new DataSet();
+            SqlDataAdapter da1 = new SqlDataAdapter(Cadena, thisConnecion);
+            da1.Fill(ds1, "tbl");
+            tablasFIN = ds1.Tables["tbl"];
+            SqlCommand cmd;
+            cmd = new SqlCommand(Cadena);
+            cmd.Connection = thisConnecion;
+            SqlDataReader Info;
+            Info = cmd.ExecuteReader();
+            DataColumn column;
+
+
+
+            DataRow rowi = tablasFIN.NewRow();
+            rowi["Numero"] = "0";
+            rowi["tbl_clave"] = "";
+            if (tablasFIN.Rows.Count > 0)
+            {
+                rowi["tbl_nombre"] = "Seleccione una Tabla";
+            }
+            else
+            {
+                rowi["tbl_nombre"] = "Sin Tablas Disponibles";
+            }
+
+            tablasFIN.Rows.Add(rowi);
+
+            tablasFIN.DefaultView.Sort = "Numero ASC";
+
+            thisConnecion.Close();
+
+
+            AutoCompleteStringCollection stringCol = new AutoCompleteStringCollection();
+
+            foreach (DataRow row in tablasFIN.Rows)
+            {
+                stringCol.Add(Convert.ToString(row["tbl_nombre"]));
+            }
+
+            CBTblfin.DataSource = tablasFIN;
+            CBTblfin.DisplayMember = "tbl_nombre";
+            CBTblfin.ValueMember = "tbl_clave";
+
+            CBTblfin.AutoCompleteCustomSource = stringCol;
+            CBTblfin.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            CBTblfin.AutoCompleteSource = AutoCompleteSource.FileSystemDirectories;
+
+
+            txttblfin.Text = "";
+
+            //Llenado de Combo Proveedor ********************************----*******************
+
+        }
+
+        private void FechaInirepo_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FechaFinrepo_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        #region EVENTOS DE INTERFAZ
+        // --- Proveedor Inicial ---
+        private void CBProvini_SelectedValueChanged(object sender, EventArgs e)
+        {
+            // Validar que realmente haya un elemento seleccionado y que no esté cargando apenas el formulario
+            if (CBProvini.SelectedValue != null && CBProvini.SelectedIndex != -1)
+            {
+                // Asigna la clave directamente gracias al ValueMember
+                txtprovini.Text = CBProvini.SelectedValue.ToString().Trim();
+                cargarCBRchIniReportes(); // Tu método que llena los combos hijos
+            }
+        }
+        private void txtprovini_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string claveBusqueda = txtprovini.Text.Trim();
+                if (!string.IsNullOrEmpty(claveBusqueda))
+                {
+                    // CORRECCIÓN: En lugar de FindStringExact, buscamos en el DataSource real
+                    // Asumiendo que proveedoresINI es el DataTable enlazado al ComboBox
+                    DataRow[] filas = proveedoresINI.Select($"prov_clave = '{claveBusqueda}'");
+
+                    if (filas.Length > 0)
+                    {
+                        // Al asignar el SelectedValue, automáticamente se disparará CBProvini_SelectedValueChanged
+                        CBProvini.SelectedValue = claveBusqueda;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Proveedor no encontrado. Verifique el código.", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        // --- Rancho Inicial ---
+        private void CBRchini_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (CBRchini.SelectedValue != null && CBRchini.SelectedIndex != -1)
+            {
+                // Asigna la clave del rancho al cuadro de texto automáticamente
+                txtrchini.Text = CBRchini.SelectedValue.ToString().Trim();
+
+                // Siguiente paso en la cadena: Cargar las tablas de este rancho
+                cargarCBTblIniReportes();
+            }
+        }
+        private void txtrchini_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string claveBusqueda = txtrchini.Text.Trim();
+                if (!string.IsNullOrEmpty(claveBusqueda))
+                {
+                    // Buscamos el rancho por su clave en el DataTable de ranchos
+                    DataRow[] filas = ranchosINI.Select($"rch_clave = '{claveBusqueda}'");
+
+                    if (filas.Length > 0)
+                    {
+                        // Esto selecciona el rancho en el combo y dispara el evento de arriba
+                        CBRchini.SelectedValue = claveBusqueda;
+                        txttblini.Focus(); // Pasa el foco al siguiente campo
+                    }
+                    else
+                    {
+                        MessageBox.Show("Rancho no encontrado. Verifique el código.", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        // --- Tabla Inicial ---
+        private void CBTblini_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (CBTblini.SelectedValue != null && CBTblini.SelectedIndex != -1)
+            {
+                // Asigna la clave de la tabla al cuadro de texto automáticamente
+                txttblini.Text = CBTblini.SelectedValue.ToString().Trim();
+            }
+        }
+        private void txttblini_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string claveBusqueda = txttblini.Text.Trim();
+                if (!string.IsNullOrEmpty(claveBusqueda))
+                {
+                    // Buscamos la tabla por su clave en el DataTable de tablas (asumiendo que se llama 'tablas')
+                    DataRow[] filas = tablasINI.Select($"tbl_clave = '{claveBusqueda}'");
+
+                    if (filas.Length > 0)
+                    {
+                        // Selecciona la tabla en el combo
+                        CBTblini.SelectedValue = claveBusqueda;
+                        // Aquí puedes mandar el foco al botón de "Aceptar" o "Generar Reporte"
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tabla no encontrada. Verifique el código.", "AVISO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+
+
+        // --- Proveedor Final ---
+        private void CBProvfin_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CBProvfin.SelectedValue != null && !string.IsNullOrEmpty(CBProvfin.SelectedValue.ToString()))
+            {
+                txtprovfin.Text = CBProvfin.SelectedValue.ToString();
+                cargarCBRchFinReportes();
+            }
+            else
+            {
+                txtprovfin.Text = "";
+            }
+        }
+
+        private void txtprovfin_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string texto = txtprovfin.Text.Trim();
+                if (!string.IsNullOrEmpty(texto))
+                {
+                    int index = CBProvfin.FindStringExact(texto);
+                    if (index >= 0)
+                        CBProvfin.SelectedIndex = index;
+                    else
+                        MessageBox.Show("Proveedor no encontrado. Verifique el código.");
+                }
+            }
+        }
+
+        // --- Rancho Final ---
+        private void CBRchfin_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CBRchfin.SelectedValue != null && !string.IsNullOrEmpty(CBRchfin.SelectedValue.ToString()))
+            {
+                txtrchfin.Text = CBRchfin.SelectedValue.ToString();
+                cargarCBTblFinReportes();
+            }
+            else
+            {
+                txtrchfin.Text = "";
+            }
+        }
+
+        private void txtrchfin_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string texto = txtrchfin.Text.Trim();
+                if (!string.IsNullOrEmpty(texto))
+                {
+                    int index = CBRchfin.FindStringExact(texto);
+                    if (index >= 0)
+                        CBRchfin.SelectedIndex = index;
+                    else
+                        MessageBox.Show("Rancho no encontrado. Verifique el código.");
+                }
+            }
+        }
+
+        // --- Tabla Final ---
+        private void CBTblfin_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CBTblfin.SelectedValue != null && !string.IsNullOrEmpty(CBTblfin.SelectedValue.ToString()))
+            {
+                txttblfin.Text = CBTblfin.SelectedValue.ToString();
+            }
+            else
+            {
+                txttblfin.Text = "";
+            }
+        }
+
+        private void txttblfin_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string texto = txttblfin.Text.Trim();
+                if (!string.IsNullOrEmpty(texto))
+                {
+                    int index = CBTblfin.FindStringExact(texto);
+                    if (index >= 0)
+                        CBTblfin.SelectedIndex = index;
+                    else
+                        MessageBox.Show("Tabla no encontrada. Verifique el código.");
+                }
+            }
+        }
+        #endregion
+        #region MÉTODOS AUXILIARES (MEJORADOS)
+
+        private DataTable CargarTablaConSeleccion(string consulta, Dictionary<string, object> parametros,
+                                          string columnaClave, string columnaNombre,
+                                          string textoSeleccion = "Seleccione una opción",
+                                          string textoSinDatos = "Sin datos disponibles")
+        {
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(Utilerias.Class1.ConnectionString))
+            using (SqlCommand cmd = new SqlCommand(consulta, conn))
+            {
+                if (parametros != null)
+                {
+                    foreach (var p in parametros)
+                        cmd.Parameters.AddWithValue(p.Key, p.Value);
+                }
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            // Agregar fila de selección al inicio
+            DataRow row = dt.NewRow();
+            row[columnaClave] = DBNull.Value; // o string vacío
+            row[columnaNombre] = (dt.Rows.Count > 0) ? textoSeleccion : textoSinDatos;
+
+            // Si existe columna Numero, asignar "0" para que aparezca primero
+            if (dt.Columns.Contains("Numero"))
+                row["Numero"] = "0";
+
+            dt.Rows.InsertAt(row, 0);
+
+            // Ordenar por Numero (si existe) y luego por nombre
+            if (dt.Columns.Contains("Numero"))
+                dt.DefaultView.Sort = "Numero ASC, " + columnaNombre + " ASC";
+            else
+                dt.DefaultView.Sort = columnaNombre + " ASC";
+
+            return dt;
+        }
+
+        private void ConfigurarCombo(ComboBox combo, DataTable fuente, string display, string value)
+        {
+            if (combo == null) return;
+
+            if (fuente == null || fuente.Rows.Count == 0)
+            {
+                combo.DataSource = null;
+                combo.Items.Clear();
+                combo.Items.Add("Sin datos");
+                combo.DisplayMember = "";
+                combo.ValueMember = "";
+                return;
+            }
+
+            combo.DataSource = fuente.DefaultView;
+            combo.DisplayMember = display;
+            combo.ValueMember = value;
+
+            // Configurar AutoComplete
+            AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
+            foreach (DataRowView row in fuente.DefaultView)
+            {
+                string texto = row[display]?.ToString();
+                if (!string.IsNullOrEmpty(texto))
+                    collection.Add(texto);
+            }
+            combo.AutoCompleteCustomSource = collection;
+            combo.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            combo.AutoCompleteSource = AutoCompleteSource.CustomSource; // CORREGIDO
+        }
+
+        #endregion
+
+        #region OBTENER REPORTE
+        public void ObtenerReporte()
+        {
+            // 1. Validamos si están vacíos o no (Sintaxis compatible con .NET 4.0)
+            bool tieneProv = txtprovini != null && !string.IsNullOrWhiteSpace(txtprovini.Text);
+            bool tieneRch = txtrchini != null && !string.IsNullOrWhiteSpace(txtrchini.Text);
+            bool tieneTbl = txttblini != null && !string.IsNullOrWhiteSpace(txttblini.Text);
+
+            // 2. Contamos cuántos campos SÍ tienen datos
+            int camposLlenos = 0;
+            if (tieneProv) camposLlenos++;
+            if (tieneRch) camposLlenos++;
+            if (tieneTbl) camposLlenos++;
+
+            // 3. Evaluamos según tus 4 casos basados en la cantidad de campos llenos
+            switch (camposLlenos)
+            {
+                case 0:
+                    // CASO 1: Los tres están vacíos (0 llenos)
+                    MessageBox.Show("Error: Todos los campos están vacíos.");
+                    break;
+
+                case 1:
+                    // CASO 2: Solo uno de los tres tiene datos (cualquiera de ellos)
+                    MessageBox.Show("Validación: Solo se llenó un campo.");
+                    break;
+
+                case 2:
+                    // CASO 3: Hay dos campos llenos y uno vacío
+                    MessageBox.Show("Validación: Se llenaron exactamente dos campos.");
+                    break;
+
+                case 3:
+                    // CASO 4: Los tres campos están completamente llenos
+                    MessageBox.Show("Éxito: Todos los campos están llenos.");
+                    break;
+            }
+        }
+        #endregion
     }
 }

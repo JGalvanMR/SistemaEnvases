@@ -120,34 +120,56 @@
             this.imprimir_ent = new System.Windows.Forms.Button();
             this.guardar_ent = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.opcionrep = new System.Windows.Forms.GroupBox();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.CBTblfin = new System.Windows.Forms.ComboBox();
+            this.CBRchfin = new System.Windows.Forms.ComboBox();
+            this.txttblfin = new System.Windows.Forms.TextBox();
+            this.CBProvfin = new System.Windows.Forms.ComboBox();
+            this.lbtblfin = new System.Windows.Forms.Label();
+            this.txtrchfin = new System.Windows.Forms.TextBox();
+            this.CBTblini = new System.Windows.Forms.ComboBox();
+            this.txttblini = new System.Windows.Forms.TextBox();
+            this.txtprovfin = new System.Windows.Forms.TextBox();
+            this.lbtblini = new System.Windows.Forms.Label();
+            this.lbrchfin = new System.Windows.Forms.Label();
+            this.lbtabla = new System.Windows.Forms.Label();
+            this.lbprovfin = new System.Windows.Forms.Label();
+            this.CBRchini = new System.Windows.Forms.ComboBox();
+            this.txtrchini = new System.Windows.Forms.TextBox();
+            this.CBProvini = new System.Windows.Forms.ComboBox();
+            this.lbrchini = new System.Windows.Forms.Label();
+            this.txtprovini = new System.Windows.Forms.TextBox();
+            this.lbrancho = new System.Windows.Forms.Label();
+            this.lbprovini = new System.Windows.Forms.Label();
+            this.lbproveedor = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
             this.BtnActxDia = new System.Windows.Forms.Button();
             this.cortemanuallabel = new System.Windows.Forms.Label();
             this.cortemanualprogress = new System.Windows.Forms.ProgressBar();
             this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.cmbprovfinrep = new System.Windows.Forms.ComboBox();
-            this.cmbprovinirep = new System.Windows.Forms.ComboBox();
             this.button17 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
-            this.opcionrep = new System.Windows.Forms.GroupBox();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.label25 = new System.Windows.Forms.Label();
-            this.clbprovfinrep = new System.Windows.Forms.MaskedTextBox();
             this.cmbenvrep = new System.Windows.Forms.ComboBox();
             this.label26 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
             this.clbenvrep = new System.Windows.Forms.MaskedTextBox();
-            this.clbprovinirep = new System.Windows.Forms.MaskedTextBox();
             this.FechaFinrepo = new System.Windows.Forms.DateTimePicker();
             this.label23 = new System.Windows.Forms.Label();
             this.FechaInirepo = new System.Windows.Forms.DateTimePicker();
             this.label22 = new System.Windows.Forms.Label();
+            this.cmbprovfinrep = new System.Windows.Forms.ComboBox();
+            this.cmbprovinirep = new System.Windows.Forms.ComboBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.clbprovfinrep = new System.Windows.Forms.MaskedTextBox();
+            this.clbprovinirep = new System.Windows.Forms.MaskedTextBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.Movimientos = new System.Windows.Forms.Button();
             this.recalcular = new System.Windows.Forms.Label();
@@ -180,14 +202,6 @@
             this.button9 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label31 = new System.Windows.Forms.Label();
-            this.label32 = new System.Windows.Forms.Label();
-            this.CBProvini = new System.Windows.Forms.ComboBox();
-            this.txtprovini = new System.Windows.Forms.TextBox();
-            this.lbprovini = new System.Windows.Forms.Label();
-            this.lbproveedor = new System.Windows.Forms.Label();
-            this.CBProvfin = new System.Windows.Forms.ComboBox();
-            this.txtprovfin = new System.Windows.Forms.TextBox();
-            this.lbprovfin = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -1050,11 +1064,26 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.opcionrep);
+            this.tabPage3.Controls.Add(this.CBTblfin);
+            this.tabPage3.Controls.Add(this.CBRchfin);
+            this.tabPage3.Controls.Add(this.txttblfin);
             this.tabPage3.Controls.Add(this.CBProvfin);
+            this.tabPage3.Controls.Add(this.lbtblfin);
+            this.tabPage3.Controls.Add(this.txtrchfin);
+            this.tabPage3.Controls.Add(this.CBTblini);
+            this.tabPage3.Controls.Add(this.txttblini);
             this.tabPage3.Controls.Add(this.txtprovfin);
+            this.tabPage3.Controls.Add(this.lbtblini);
+            this.tabPage3.Controls.Add(this.lbrchfin);
+            this.tabPage3.Controls.Add(this.lbtabla);
             this.tabPage3.Controls.Add(this.lbprovfin);
+            this.tabPage3.Controls.Add(this.CBRchini);
+            this.tabPage3.Controls.Add(this.txtrchini);
             this.tabPage3.Controls.Add(this.CBProvini);
+            this.tabPage3.Controls.Add(this.lbrchini);
             this.tabPage3.Controls.Add(this.txtprovini);
+            this.tabPage3.Controls.Add(this.lbrancho);
             this.tabPage3.Controls.Add(this.lbprovini);
             this.tabPage3.Controls.Add(this.lbproveedor);
             this.tabPage3.Controls.Add(this.label32);
@@ -1064,25 +1093,24 @@
             this.tabPage3.Controls.Add(this.button11);
             this.tabPage3.Controls.Add(this.button10);
             this.tabPage3.Controls.Add(this.button7);
-            this.tabPage3.Controls.Add(this.cmbprovfinrep);
-            this.tabPage3.Controls.Add(this.cmbprovinirep);
             this.tabPage3.Controls.Add(this.button17);
             this.tabPage3.Controls.Add(this.button16);
             this.tabPage3.Controls.Add(this.button18);
             this.tabPage3.Controls.Add(this.button15);
             this.tabPage3.Controls.Add(this.button14);
-            this.tabPage3.Controls.Add(this.opcionrep);
-            this.tabPage3.Controls.Add(this.label25);
-            this.tabPage3.Controls.Add(this.clbprovfinrep);
             this.tabPage3.Controls.Add(this.cmbenvrep);
             this.tabPage3.Controls.Add(this.label26);
-            this.tabPage3.Controls.Add(this.label24);
             this.tabPage3.Controls.Add(this.clbenvrep);
-            this.tabPage3.Controls.Add(this.clbprovinirep);
             this.tabPage3.Controls.Add(this.FechaFinrepo);
             this.tabPage3.Controls.Add(this.label23);
             this.tabPage3.Controls.Add(this.FechaInirepo);
             this.tabPage3.Controls.Add(this.label22);
+            this.tabPage3.Controls.Add(this.cmbprovfinrep);
+            this.tabPage3.Controls.Add(this.cmbprovinirep);
+            this.tabPage3.Controls.Add(this.label25);
+            this.tabPage3.Controls.Add(this.clbprovfinrep);
+            this.tabPage3.Controls.Add(this.clbprovinirep);
+            this.tabPage3.Controls.Add(this.label24);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(934, 524);
@@ -1091,148 +1119,12 @@
             this.tabPage3.UseVisualStyleBackColor = true;
             this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
             // 
-            // BtnActxDia
-            // 
-            this.BtnActxDia.Location = new System.Drawing.Point(826, 461);
-            this.BtnActxDia.Name = "BtnActxDia";
-            this.BtnActxDia.Size = new System.Drawing.Size(100, 54);
-            this.BtnActxDia.TabIndex = 186;
-            this.BtnActxDia.Text = "Actualiza x Dia Inv de Esparrago";
-            this.BtnActxDia.UseVisualStyleBackColor = true;
-            this.BtnActxDia.Click += new System.EventHandler(this.BtnActxDia_Click);
-            // 
-            // cortemanuallabel
-            // 
-            this.cortemanuallabel.AutoSize = true;
-            this.cortemanuallabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cortemanuallabel.ForeColor = System.Drawing.Color.Black;
-            this.cortemanuallabel.Location = new System.Drawing.Point(155, 10);
-            this.cortemanuallabel.Name = "cortemanuallabel";
-            this.cortemanuallabel.Size = new System.Drawing.Size(130, 13);
-            this.cortemanuallabel.TabIndex = 185;
-            this.cortemanuallabel.Text = "REALIZANDO CORTE:";
-            this.cortemanuallabel.Visible = false;
-            // 
-            // cortemanualprogress
-            // 
-            this.cortemanualprogress.Location = new System.Drawing.Point(291, 5);
-            this.cortemanualprogress.Name = "cortemanualprogress";
-            this.cortemanualprogress.Size = new System.Drawing.Size(437, 23);
-            this.cortemanualprogress.TabIndex = 184;
-            this.cortemanualprogress.Visible = false;
-            this.cortemanualprogress.Click += new System.EventHandler(this.cortemanualprogress_Click);
-            // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(654, 250);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(272, 38);
-            this.button11.TabIndex = 182;
-            this.button11.Text = "INVENTARIO ESPARRAGO PROVEEDOR";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(654, 162);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(272, 38);
-            this.button10.TabIndex = 181;
-            this.button10.Text = "INVENTARIO CAJONES PROVEEDOR";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(654, 206);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(272, 38);
-            this.button7.TabIndex = 180;
-            this.button7.Text = "INVENTARIO ENVASES";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // cmbprovfinrep
-            // 
-            this.cmbprovfinrep.FormattingEnabled = true;
-            this.cmbprovfinrep.Location = new System.Drawing.Point(319, 65);
-            this.cmbprovfinrep.Name = "cmbprovfinrep";
-            this.cmbprovfinrep.Size = new System.Drawing.Size(238, 21);
-            this.cmbprovfinrep.TabIndex = 179;
-            this.cmbprovfinrep.Visible = false;
-            this.cmbprovfinrep.SelectedValueChanged += new System.EventHandler(this.cmbprovfinrep_SelectedValueChanged);
-            // 
-            // cmbprovinirep
-            // 
-            this.cmbprovinirep.FormattingEnabled = true;
-            this.cmbprovinirep.Location = new System.Drawing.Point(55, 65);
-            this.cmbprovinirep.Name = "cmbprovinirep";
-            this.cmbprovinirep.Size = new System.Drawing.Size(238, 21);
-            this.cmbprovinirep.TabIndex = 178;
-            this.cmbprovinirep.Visible = false;
-            this.cmbprovinirep.SelectedValueChanged += new System.EventHandler(this.cmbprovinirep_SelectedValueChanged);
-            // 
-            // button17
-            // 
-            this.button17.Location = new System.Drawing.Point(654, 294);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(272, 38);
-            this.button17.TabIndex = 177;
-            this.button17.Text = "INVENTARIO POR PROVEEDOR";
-            this.button17.UseVisualStyleBackColor = true;
-            this.button17.Visible = false;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
-            // 
-            // button16
-            // 
-            this.button16.Location = new System.Drawing.Point(654, 338);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(272, 38);
-            this.button16.TabIndex = 177;
-            this.button16.Text = "INVENTARIO A NIVEL TABLA";
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Visible = false;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button18
-            // 
-            this.button18.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button18.Image = global::SistemaEnvases.Properties.Resources.inventarioX;
-            this.button18.Location = new System.Drawing.Point(865, 5);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(63, 59);
-            this.button18.TabIndex = 176;
-            this.button18.UseVisualStyleBackColor = true;
-            this.button18.Click += new System.EventHandler(this.button18_Click);
-            // 
-            // button15
-            // 
-            this.button15.Image = global::SistemaEnvases.Properties.Resources.Excel31;
-            this.button15.Location = new System.Drawing.Point(282, 459);
-            this.button15.Name = "button15";
-            this.button15.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.button15.Size = new System.Drawing.Size(63, 59);
-            this.button15.TabIndex = 176;
-            this.button15.UseVisualStyleBackColor = true;
-            this.button15.Click += new System.EventHandler(this.button15_Click);
-            // 
-            // button14
-            // 
-            this.button14.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button14.Image = global::SistemaEnvases.Properties.Resources.ExcelMini;
-            this.button14.Location = new System.Drawing.Point(257, 313);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(41, 39);
-            this.button14.TabIndex = 175;
-            this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click);
-            // 
             // opcionrep
             // 
             this.opcionrep.Controls.Add(this.radioButton3);
             this.opcionrep.Controls.Add(this.radioButton2);
             this.opcionrep.Controls.Add(this.radioButton1);
-            this.opcionrep.Location = new System.Drawing.Point(7, 282);
+            this.opcionrep.Location = new System.Drawing.Point(442, 181);
             this.opcionrep.Name = "opcionrep";
             this.opcionrep.Size = new System.Drawing.Size(128, 94);
             this.opcionrep.TabIndex = 173;
@@ -1270,32 +1162,415 @@
             this.radioButton1.Text = "ENTRADAS";
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
-            // label25
+            // CBTblfin
             // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label25.ForeColor = System.Drawing.Color.Black;
-            this.label25.Location = new System.Drawing.Point(307, 41);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(86, 13);
-            this.label25.TabIndex = 171;
-            this.label25.Text = "PROVEEDOR:";
-            this.label25.Visible = false;
+            this.CBTblfin.DropDownHeight = 100;
+            this.CBTblfin.DropDownWidth = 400;
+            this.CBTblfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.CBTblfin.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CBTblfin.FormattingEnabled = true;
+            this.CBTblfin.IntegralHeight = false;
+            this.CBTblfin.Location = new System.Drawing.Point(446, 268);
+            this.CBTblfin.Name = "CBTblfin";
+            this.CBTblfin.Size = new System.Drawing.Size(195, 21);
+            this.CBTblfin.TabIndex = 676;
+            this.CBTblfin.Visible = false;
             // 
-            // clbprovfinrep
+            // CBRchfin
             // 
-            this.clbprovfinrep.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clbprovfinrep.Location = new System.Drawing.Point(402, 36);
-            this.clbprovfinrep.Name = "clbprovfinrep";
-            this.clbprovfinrep.Size = new System.Drawing.Size(147, 23);
-            this.clbprovfinrep.TabIndex = 170;
-            this.clbprovfinrep.Visible = false;
-            this.clbprovfinrep.KeyUp += new System.Windows.Forms.KeyEventHandler(this.clbprovfinrep_KeyUp);
+            this.CBRchfin.DropDownHeight = 100;
+            this.CBRchfin.DropDownWidth = 400;
+            this.CBRchfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.CBRchfin.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CBRchfin.FormattingEnabled = true;
+            this.CBRchfin.IntegralHeight = false;
+            this.CBRchfin.Location = new System.Drawing.Point(446, 218);
+            this.CBRchfin.Name = "CBRchfin";
+            this.CBRchfin.Size = new System.Drawing.Size(195, 21);
+            this.CBRchfin.TabIndex = 669;
+            this.CBRchfin.Visible = false;
+            this.CBRchfin.SelectedIndexChanged += new System.EventHandler(this.CBRchfin_SelectedIndexChanged);
+            // 
+            // txttblfin
+            // 
+            this.txttblfin.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txttblfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.txttblfin.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txttblfin.Location = new System.Drawing.Point(371, 267);
+            this.txttblfin.MaxLength = 10;
+            this.txttblfin.Name = "txttblfin";
+            this.txttblfin.Size = new System.Drawing.Size(65, 23);
+            this.txttblfin.TabIndex = 675;
+            this.txttblfin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txttblfin.Visible = false;
+            // 
+            // CBProvfin
+            // 
+            this.CBProvfin.DropDownHeight = 100;
+            this.CBProvfin.DropDownWidth = 400;
+            this.CBProvfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.CBProvfin.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CBProvfin.FormattingEnabled = true;
+            this.CBProvfin.IntegralHeight = false;
+            this.CBProvfin.Location = new System.Drawing.Point(446, 169);
+            this.CBProvfin.Name = "CBProvfin";
+            this.CBProvfin.Size = new System.Drawing.Size(195, 21);
+            this.CBProvfin.TabIndex = 659;
+            this.CBProvfin.Visible = false;
+            this.CBProvfin.SelectedIndexChanged += new System.EventHandler(this.CBProvfin_SelectedIndexChanged);
+            // 
+            // lbtblfin
+            // 
+            this.lbtblfin.AutoSize = true;
+            this.lbtblfin.BackColor = System.Drawing.Color.Transparent;
+            this.lbtblfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbtblfin.ForeColor = System.Drawing.Color.Black;
+            this.lbtblfin.Location = new System.Drawing.Point(335, 272);
+            this.lbtblfin.Name = "lbtblfin";
+            this.lbtblfin.Size = new System.Drawing.Size(26, 13);
+            this.lbtblfin.TabIndex = 674;
+            this.lbtblfin.Text = "AL:";
+            this.lbtblfin.Visible = false;
+            // 
+            // txtrchfin
+            // 
+            this.txtrchfin.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtrchfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.txtrchfin.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtrchfin.Location = new System.Drawing.Point(371, 217);
+            this.txtrchfin.MaxLength = 10;
+            this.txtrchfin.Name = "txtrchfin";
+            this.txtrchfin.Size = new System.Drawing.Size(65, 23);
+            this.txtrchfin.TabIndex = 668;
+            this.txtrchfin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtrchfin.Visible = false;
+            // 
+            // CBTblini
+            // 
+            this.CBTblini.DropDownHeight = 100;
+            this.CBTblini.DropDownWidth = 400;
+            this.CBTblini.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.CBTblini.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CBTblini.FormattingEnabled = true;
+            this.CBTblini.IntegralHeight = false;
+            this.CBTblini.Location = new System.Drawing.Point(130, 268);
+            this.CBTblini.Name = "CBTblini";
+            this.CBTblini.Size = new System.Drawing.Size(195, 21);
+            this.CBTblini.TabIndex = 673;
+            this.CBTblini.SelectedValueChanged += new System.EventHandler(this.CBTblini_SelectedValueChanged);
+            // 
+            // txttblini
+            // 
+            this.txttblini.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txttblini.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.txttblini.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txttblini.Location = new System.Drawing.Point(55, 267);
+            this.txttblini.MaxLength = 10;
+            this.txttblini.Name = "txttblini";
+            this.txttblini.Size = new System.Drawing.Size(65, 23);
+            this.txttblini.TabIndex = 672;
+            this.txttblini.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txttblini.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txttblini_KeyUp);
+            // 
+            // txtprovfin
+            // 
+            this.txtprovfin.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtprovfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.txtprovfin.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtprovfin.Location = new System.Drawing.Point(371, 168);
+            this.txtprovfin.MaxLength = 10;
+            this.txtprovfin.Name = "txtprovfin";
+            this.txtprovfin.Size = new System.Drawing.Size(65, 23);
+            this.txtprovfin.TabIndex = 658;
+            this.txtprovfin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtprovfin.Visible = false;
+            // 
+            // lbtblini
+            // 
+            this.lbtblini.AutoSize = true;
+            this.lbtblini.BackColor = System.Drawing.Color.Transparent;
+            this.lbtblini.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbtblini.ForeColor = System.Drawing.Color.Black;
+            this.lbtblini.Location = new System.Drawing.Point(10, 272);
+            this.lbtblini.Name = "lbtblini";
+            this.lbtblini.Size = new System.Drawing.Size(35, 13);
+            this.lbtblini.TabIndex = 671;
+            this.lbtblini.Text = "DEL:";
+            this.lbtblini.Visible = false;
+            // 
+            // lbrchfin
+            // 
+            this.lbrchfin.AutoSize = true;
+            this.lbrchfin.BackColor = System.Drawing.Color.Transparent;
+            this.lbrchfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbrchfin.ForeColor = System.Drawing.Color.Black;
+            this.lbrchfin.Location = new System.Drawing.Point(335, 222);
+            this.lbrchfin.Name = "lbrchfin";
+            this.lbrchfin.Size = new System.Drawing.Size(26, 13);
+            this.lbrchfin.TabIndex = 667;
+            this.lbrchfin.Text = "AL:";
+            this.lbrchfin.Visible = false;
+            // 
+            // lbtabla
+            // 
+            this.lbtabla.AutoSize = true;
+            this.lbtabla.BackColor = System.Drawing.Color.Transparent;
+            this.lbtabla.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbtabla.ForeColor = System.Drawing.Color.Black;
+            this.lbtabla.Location = new System.Drawing.Point(10, 252);
+            this.lbtabla.Name = "lbtabla";
+            this.lbtabla.Size = new System.Drawing.Size(48, 13);
+            this.lbtabla.TabIndex = 670;
+            this.lbtabla.Text = "TABLA:";
+            // 
+            // lbprovfin
+            // 
+            this.lbprovfin.AutoSize = true;
+            this.lbprovfin.BackColor = System.Drawing.Color.Transparent;
+            this.lbprovfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbprovfin.ForeColor = System.Drawing.Color.Black;
+            this.lbprovfin.Location = new System.Drawing.Point(335, 173);
+            this.lbprovfin.Name = "lbprovfin";
+            this.lbprovfin.Size = new System.Drawing.Size(26, 13);
+            this.lbprovfin.TabIndex = 657;
+            this.lbprovfin.Text = "AL:";
+            this.lbprovfin.Visible = false;
+            // 
+            // CBRchini
+            // 
+            this.CBRchini.DropDownHeight = 100;
+            this.CBRchini.DropDownWidth = 400;
+            this.CBRchini.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.CBRchini.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CBRchini.FormattingEnabled = true;
+            this.CBRchini.IntegralHeight = false;
+            this.CBRchini.Location = new System.Drawing.Point(130, 218);
+            this.CBRchini.Name = "CBRchini";
+            this.CBRchini.Size = new System.Drawing.Size(195, 21);
+            this.CBRchini.TabIndex = 666;
+            this.CBRchini.SelectedValueChanged += new System.EventHandler(this.CBRchini_SelectedValueChanged);
+            // 
+            // txtrchini
+            // 
+            this.txtrchini.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtrchini.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.txtrchini.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtrchini.Location = new System.Drawing.Point(55, 217);
+            this.txtrchini.MaxLength = 10;
+            this.txtrchini.Name = "txtrchini";
+            this.txtrchini.Size = new System.Drawing.Size(65, 23);
+            this.txtrchini.TabIndex = 665;
+            this.txtrchini.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtrchini.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtrchini_KeyUp);
+            // 
+            // CBProvini
+            // 
+            this.CBProvini.DropDownHeight = 100;
+            this.CBProvini.DropDownWidth = 400;
+            this.CBProvini.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.CBProvini.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CBProvini.FormattingEnabled = true;
+            this.CBProvini.IntegralHeight = false;
+            this.CBProvini.Location = new System.Drawing.Point(130, 169);
+            this.CBProvini.Name = "CBProvini";
+            this.CBProvini.Size = new System.Drawing.Size(195, 21);
+            this.CBProvini.TabIndex = 656;
+            this.CBProvini.SelectedValueChanged += new System.EventHandler(this.CBProvini_SelectedValueChanged);
+            // 
+            // lbrchini
+            // 
+            this.lbrchini.AutoSize = true;
+            this.lbrchini.BackColor = System.Drawing.Color.Transparent;
+            this.lbrchini.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbrchini.ForeColor = System.Drawing.Color.Black;
+            this.lbrchini.Location = new System.Drawing.Point(10, 222);
+            this.lbrchini.Name = "lbrchini";
+            this.lbrchini.Size = new System.Drawing.Size(35, 13);
+            this.lbrchini.TabIndex = 664;
+            this.lbrchini.Text = "DEL:";
+            this.lbrchini.Visible = false;
+            // 
+            // txtprovini
+            // 
+            this.txtprovini.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtprovini.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.txtprovini.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtprovini.Location = new System.Drawing.Point(55, 168);
+            this.txtprovini.MaxLength = 10;
+            this.txtprovini.Name = "txtprovini";
+            this.txtprovini.Size = new System.Drawing.Size(65, 23);
+            this.txtprovini.TabIndex = 655;
+            this.txtprovini.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtprovini.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtprovini_KeyUp);
+            // 
+            // lbrancho
+            // 
+            this.lbrancho.AutoSize = true;
+            this.lbrancho.BackColor = System.Drawing.Color.Transparent;
+            this.lbrancho.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbrancho.ForeColor = System.Drawing.Color.Black;
+            this.lbrancho.Location = new System.Drawing.Point(10, 202);
+            this.lbrancho.Name = "lbrancho";
+            this.lbrancho.Size = new System.Drawing.Size(56, 13);
+            this.lbrancho.TabIndex = 663;
+            this.lbrancho.Text = "RANCHO";
+            // 
+            // lbprovini
+            // 
+            this.lbprovini.AutoSize = true;
+            this.lbprovini.BackColor = System.Drawing.Color.Transparent;
+            this.lbprovini.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbprovini.ForeColor = System.Drawing.Color.Black;
+            this.lbprovini.Location = new System.Drawing.Point(10, 172);
+            this.lbprovini.Name = "lbprovini";
+            this.lbprovini.Size = new System.Drawing.Size(35, 13);
+            this.lbprovini.TabIndex = 654;
+            this.lbprovini.Text = "DEL:";
+            this.lbprovini.Visible = false;
+            // 
+            // lbproveedor
+            // 
+            this.lbproveedor.AutoSize = true;
+            this.lbproveedor.BackColor = System.Drawing.Color.Transparent;
+            this.lbproveedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
+            this.lbproveedor.ForeColor = System.Drawing.Color.Black;
+            this.lbproveedor.Location = new System.Drawing.Point(10, 152);
+            this.lbproveedor.Name = "lbproveedor";
+            this.lbproveedor.Size = new System.Drawing.Size(82, 13);
+            this.lbproveedor.TabIndex = 653;
+            this.lbproveedor.Text = "PROVEEDOR";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.ForeColor = System.Drawing.Color.Black;
+            this.label32.Location = new System.Drawing.Point(57, 62);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(46, 13);
+            this.label32.TabIndex = 187;
+            this.label32.Text = "FECHA";
+            // 
+            // BtnActxDia
+            // 
+            this.BtnActxDia.Location = new System.Drawing.Point(826, 461);
+            this.BtnActxDia.Name = "BtnActxDia";
+            this.BtnActxDia.Size = new System.Drawing.Size(100, 54);
+            this.BtnActxDia.TabIndex = 186;
+            this.BtnActxDia.Text = "Actualiza x Dia Inv de Esparrago";
+            this.BtnActxDia.UseVisualStyleBackColor = true;
+            this.BtnActxDia.Click += new System.EventHandler(this.BtnActxDia_Click);
+            // 
+            // cortemanuallabel
+            // 
+            this.cortemanuallabel.AutoSize = true;
+            this.cortemanuallabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cortemanuallabel.ForeColor = System.Drawing.Color.Black;
+            this.cortemanuallabel.Location = new System.Drawing.Point(155, 22);
+            this.cortemanuallabel.Name = "cortemanuallabel";
+            this.cortemanuallabel.Size = new System.Drawing.Size(130, 13);
+            this.cortemanuallabel.TabIndex = 185;
+            this.cortemanuallabel.Text = "REALIZANDO CORTE:";
+            this.cortemanuallabel.Visible = false;
+            // 
+            // cortemanualprogress
+            // 
+            this.cortemanualprogress.Location = new System.Drawing.Point(291, 17);
+            this.cortemanualprogress.Name = "cortemanualprogress";
+            this.cortemanualprogress.Size = new System.Drawing.Size(437, 23);
+            this.cortemanualprogress.TabIndex = 184;
+            this.cortemanualprogress.Visible = false;
+            this.cortemanualprogress.Click += new System.EventHandler(this.cortemanualprogress_Click);
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(703, 230);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(223, 38);
+            this.button11.TabIndex = 182;
+            this.button11.Text = "INVENTARIO ESPARRAGO PROVEEDOR";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(703, 142);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(223, 38);
+            this.button10.TabIndex = 181;
+            this.button10.Text = "INVENTARIO CAJONES PROVEEDOR";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(703, 186);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(223, 38);
+            this.button7.TabIndex = 180;
+            this.button7.Text = "INVENTARIO ENVASES";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(703, 274);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(223, 38);
+            this.button17.TabIndex = 177;
+            this.button17.Text = "INVENTARIO POR PROVEEDOR";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Visible = false;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
+            // button16
+            // 
+            this.button16.Location = new System.Drawing.Point(703, 318);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(223, 38);
+            this.button16.TabIndex = 177;
+            this.button16.Text = "INVENTARIO A NIVEL TABLA";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Visible = false;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button18
+            // 
+            this.button18.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button18.Image = global::SistemaEnvases.Properties.Resources.inventarioX;
+            this.button18.Location = new System.Drawing.Point(863, -1);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(63, 59);
+            this.button18.TabIndex = 176;
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
+            // 
+            // button15
+            // 
+            this.button15.Image = global::SistemaEnvases.Properties.Resources.Excel31;
+            this.button15.Location = new System.Drawing.Point(298, 456);
+            this.button15.Name = "button15";
+            this.button15.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.button15.Size = new System.Drawing.Size(63, 59);
+            this.button15.TabIndex = 176;
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // button14
+            // 
+            this.button14.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button14.Image = global::SistemaEnvases.Properties.Resources.ExcelMini;
+            this.button14.Location = new System.Drawing.Point(13, 466);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(41, 39);
+            this.button14.TabIndex = 175;
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // cmbenvrep
             // 
             this.cmbenvrep.FormattingEnabled = true;
-            this.cmbenvrep.Location = new System.Drawing.Point(135, 400);
+            this.cmbenvrep.Location = new System.Drawing.Point(148, 372);
             this.cmbenvrep.Name = "cmbenvrep";
             this.cmbenvrep.Size = new System.Drawing.Size(297, 21);
             this.cmbenvrep.TabIndex = 169;
@@ -1306,56 +1581,35 @@
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label26.ForeColor = System.Drawing.Color.Black;
-            this.label26.Location = new System.Drawing.Point(62, 404);
+            this.label26.Location = new System.Drawing.Point(75, 376);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(59, 13);
             this.label26.TabIndex = 168;
             this.label26.Text = "ENVASE:";
             // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.ForeColor = System.Drawing.Color.Black;
-            this.label24.Location = new System.Drawing.Point(49, 41);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(86, 13);
-            this.label24.TabIndex = 168;
-            this.label24.Text = "PROVEEDOR:";
-            this.label24.Visible = false;
-            // 
             // clbenvrep
             // 
             this.clbenvrep.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clbenvrep.Location = new System.Drawing.Point(446, 399);
+            this.clbenvrep.Location = new System.Drawing.Point(459, 371);
             this.clbenvrep.Name = "clbenvrep";
             this.clbenvrep.Size = new System.Drawing.Size(86, 23);
             this.clbenvrep.TabIndex = 167;
             this.clbenvrep.KeyUp += new System.Windows.Forms.KeyEventHandler(this.clbenvrep_KeyUp);
             // 
-            // clbprovinirep
-            // 
-            this.clbprovinirep.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clbprovinirep.Location = new System.Drawing.Point(144, 36);
-            this.clbprovinirep.Name = "clbprovinirep";
-            this.clbprovinirep.Size = new System.Drawing.Size(154, 23);
-            this.clbprovinirep.TabIndex = 167;
-            this.clbprovinirep.Visible = false;
-            this.clbprovinirep.KeyUp += new System.Windows.Forms.KeyEventHandler(this.clbprovinirep_KeyUp);
-            // 
             // FechaFinrepo
             // 
-            this.FechaFinrepo.Location = new System.Drawing.Point(358, 116);
+            this.FechaFinrepo.Location = new System.Drawing.Point(359, 80);
             this.FechaFinrepo.Name = "FechaFinrepo";
             this.FechaFinrepo.Size = new System.Drawing.Size(200, 20);
             this.FechaFinrepo.TabIndex = 164;
+            this.FechaFinrepo.ValueChanged += new System.EventHandler(this.FechaFinrepo_ValueChanged);
             // 
             // label23
             // 
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label23.ForeColor = System.Drawing.Color.Black;
-            this.label23.Location = new System.Drawing.Point(320, 120);
+            this.label23.Location = new System.Drawing.Point(321, 84);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(26, 13);
             this.label23.TabIndex = 163;
@@ -1363,21 +1617,86 @@
             // 
             // FechaInirepo
             // 
-            this.FechaInirepo.Location = new System.Drawing.Point(108, 116);
+            this.FechaInirepo.Location = new System.Drawing.Point(109, 80);
             this.FechaInirepo.Name = "FechaInirepo";
             this.FechaInirepo.Size = new System.Drawing.Size(200, 20);
             this.FechaInirepo.TabIndex = 162;
+            this.FechaInirepo.ValueChanged += new System.EventHandler(this.FechaInirepo_ValueChanged);
             // 
             // label22
             // 
             this.label22.AutoSize = true;
             this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label22.ForeColor = System.Drawing.Color.Black;
-            this.label22.Location = new System.Drawing.Point(62, 120);
+            this.label22.Location = new System.Drawing.Point(63, 84);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(35, 13);
             this.label22.TabIndex = 161;
             this.label22.Text = "DEL:";
+            // 
+            // cmbprovfinrep
+            // 
+            this.cmbprovfinrep.FormattingEnabled = true;
+            this.cmbprovfinrep.Location = new System.Drawing.Point(688, 5);
+            this.cmbprovfinrep.Name = "cmbprovfinrep";
+            this.cmbprovfinrep.Size = new System.Drawing.Size(238, 21);
+            this.cmbprovfinrep.TabIndex = 179;
+            this.cmbprovfinrep.Visible = false;
+            this.cmbprovfinrep.SelectedValueChanged += new System.EventHandler(this.cmbprovfinrep_SelectedValueChanged);
+            // 
+            // cmbprovinirep
+            // 
+            this.cmbprovinirep.FormattingEnabled = true;
+            this.cmbprovinirep.Location = new System.Drawing.Point(688, 5);
+            this.cmbprovinirep.Name = "cmbprovinirep";
+            this.cmbprovinirep.Size = new System.Drawing.Size(238, 21);
+            this.cmbprovinirep.TabIndex = 178;
+            this.cmbprovinirep.Visible = false;
+            this.cmbprovinirep.SelectedValueChanged += new System.EventHandler(this.cmbprovinirep_SelectedValueChanged);
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label25.ForeColor = System.Drawing.Color.Black;
+            this.label25.Location = new System.Drawing.Point(688, 9);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(86, 13);
+            this.label25.TabIndex = 171;
+            this.label25.Text = "PROVEEDOR:";
+            this.label25.Visible = false;
+            // 
+            // clbprovfinrep
+            // 
+            this.clbprovfinrep.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clbprovfinrep.Location = new System.Drawing.Point(688, 4);
+            this.clbprovfinrep.Name = "clbprovfinrep";
+            this.clbprovfinrep.Size = new System.Drawing.Size(238, 23);
+            this.clbprovfinrep.TabIndex = 170;
+            this.clbprovfinrep.Visible = false;
+            this.clbprovfinrep.KeyUp += new System.Windows.Forms.KeyEventHandler(this.clbprovfinrep_KeyUp);
+            // 
+            // clbprovinirep
+            // 
+            this.clbprovinirep.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clbprovinirep.Location = new System.Drawing.Point(688, 4);
+            this.clbprovinirep.Name = "clbprovinirep";
+            this.clbprovinirep.Size = new System.Drawing.Size(238, 23);
+            this.clbprovinirep.TabIndex = 167;
+            this.clbprovinirep.Visible = false;
+            this.clbprovinirep.KeyUp += new System.Windows.Forms.KeyEventHandler(this.clbprovinirep_KeyUp);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.ForeColor = System.Drawing.Color.Black;
+            this.label24.Location = new System.Drawing.Point(688, 9);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(86, 13);
+            this.label24.TabIndex = 168;
+            this.label24.Text = "PROVEEDOR:";
+            this.label24.Visible = false;
             // 
             // tabPage4
             // 
@@ -1809,103 +2128,6 @@
             this.label31.TabIndex = 129;
             this.label31.Text = "Ver 24.Oct.24";
             // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label32.ForeColor = System.Drawing.Color.Black;
-            this.label32.Location = new System.Drawing.Point(56, 98);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(46, 13);
-            this.label32.TabIndex = 187;
-            this.label32.Text = "FECHA";
-            // 
-            // CBProvini
-            // 
-            this.CBProvini.DropDownHeight = 100;
-            this.CBProvini.DropDownWidth = 400;
-            this.CBProvini.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.CBProvini.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CBProvini.FormattingEnabled = true;
-            this.CBProvini.IntegralHeight = false;
-            this.CBProvini.Location = new System.Drawing.Point(131, 189);
-            this.CBProvini.Name = "CBProvini";
-            this.CBProvini.Size = new System.Drawing.Size(195, 21);
-            this.CBProvini.TabIndex = 656;
-            // 
-            // txtprovini
-            // 
-            this.txtprovini.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtprovini.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.txtprovini.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtprovini.Location = new System.Drawing.Point(56, 190);
-            this.txtprovini.MaxLength = 10;
-            this.txtprovini.Name = "txtprovini";
-            this.txtprovini.Size = new System.Drawing.Size(65, 23);
-            this.txtprovini.TabIndex = 655;
-            this.txtprovini.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lbprovini
-            // 
-            this.lbprovini.AutoSize = true;
-            this.lbprovini.BackColor = System.Drawing.Color.Transparent;
-            this.lbprovini.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
-            this.lbprovini.ForeColor = System.Drawing.Color.Black;
-            this.lbprovini.Location = new System.Drawing.Point(11, 195);
-            this.lbprovini.Name = "lbprovini";
-            this.lbprovini.Size = new System.Drawing.Size(35, 13);
-            this.lbprovini.TabIndex = 654;
-            this.lbprovini.Text = "DEL:";
-            // 
-            // lbproveedor
-            // 
-            this.lbproveedor.AutoSize = true;
-            this.lbproveedor.BackColor = System.Drawing.Color.Transparent;
-            this.lbproveedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
-            this.lbproveedor.ForeColor = System.Drawing.Color.Black;
-            this.lbproveedor.Location = new System.Drawing.Point(10, 162);
-            this.lbproveedor.Name = "lbproveedor";
-            this.lbproveedor.Size = new System.Drawing.Size(82, 13);
-            this.lbproveedor.TabIndex = 653;
-            this.lbproveedor.Text = "PROVEEDOR";
-            // 
-            // CBProvfin
-            // 
-            this.CBProvfin.DropDownHeight = 100;
-            this.CBProvfin.DropDownWidth = 400;
-            this.CBProvfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.CBProvfin.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CBProvfin.FormattingEnabled = true;
-            this.CBProvfin.IntegralHeight = false;
-            this.CBProvfin.Location = new System.Drawing.Point(445, 189);
-            this.CBProvfin.Name = "CBProvfin";
-            this.CBProvfin.Size = new System.Drawing.Size(195, 21);
-            this.CBProvfin.TabIndex = 659;
-            // 
-            // txtprovfin
-            // 
-            this.txtprovfin.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtprovfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.txtprovfin.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtprovfin.Location = new System.Drawing.Point(370, 190);
-            this.txtprovfin.MaxLength = 10;
-            this.txtprovfin.Name = "txtprovfin";
-            this.txtprovfin.Size = new System.Drawing.Size(65, 23);
-            this.txtprovfin.TabIndex = 658;
-            this.txtprovfin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lbprovfin
-            // 
-            this.lbprovfin.AutoSize = true;
-            this.lbprovfin.BackColor = System.Drawing.Color.Transparent;
-            this.lbprovfin.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold);
-            this.lbprovfin.ForeColor = System.Drawing.Color.Black;
-            this.lbprovfin.Location = new System.Drawing.Point(336, 195);
-            this.lbprovfin.Name = "lbprovfin";
-            this.lbprovfin.Size = new System.Drawing.Size(26, 13);
-            this.lbprovfin.TabIndex = 657;
-            this.lbprovfin.Text = "AL:";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1913,10 +2135,10 @@
             this.BackgroundImage = global::SistemaEnvases.Properties.Resources.Degradado1;
             this.ClientSize = new System.Drawing.Size(962, 678);
             this.ControlBox = false;
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.pictureBox2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -2042,8 +2264,6 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button16;
-        private System.Windows.Forms.Button button15;
-        private System.Windows.Forms.Button button14;
         private System.Windows.Forms.GroupBox opcionrep;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton2;
@@ -2100,6 +2320,22 @@
         private System.Windows.Forms.ComboBox CBProvfin;
         private System.Windows.Forms.TextBox txtprovfin;
         private System.Windows.Forms.Label lbprovfin;
+        private System.Windows.Forms.ComboBox CBRchfin;
+        private System.Windows.Forms.TextBox txtrchfin;
+        private System.Windows.Forms.Label lbrchfin;
+        private System.Windows.Forms.ComboBox CBRchini;
+        private System.Windows.Forms.TextBox txtrchini;
+        private System.Windows.Forms.Label lbrchini;
+        private System.Windows.Forms.Label lbrancho;
+        private System.Windows.Forms.ComboBox CBTblfin;
+        private System.Windows.Forms.TextBox txttblfin;
+        private System.Windows.Forms.Label lbtblfin;
+        private System.Windows.Forms.ComboBox CBTblini;
+        private System.Windows.Forms.TextBox txttblini;
+        private System.Windows.Forms.Label lbtblini;
+        private System.Windows.Forms.Label lbtabla;
+        private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Button button14;
     }
 }
 
