@@ -26,7 +26,7 @@ namespace SistemaEnvases
         //SqlConnection thisConnecion = new SqlConnection("Persist Security Info=False;user id=sa; password=Gabira1;Initial Catalog =GAB_Irapuato_Prueba; server=tcp:192.168.123.6,1433; Connect Timeout = 130; MultipleActiveResultSets=True");
         string usuario_actual = Utilerias.Class1.Usu_login.Trim();
         string UsuMail = "ricardo.cortes@mrlucky.com.mx", PwdMail = "rcedillo";
-        string UsuMail2 = "sistemas@mrlucky.com.mx", PwdMail2 = "sisgab";
+        string UsuMail2 = "sistemas@mrlucky.com.mx", PwdMail2 = "Sistem@s2026$";
         DataTable Datos = new DataTable();
         DataTable Cat_Cliente = new DataTable();
         DataTable Cat_Prov = new DataTable();
@@ -2071,10 +2071,13 @@ namespace SistemaEnvases
         private void BtnSplitPed_Click(object sender, EventArgs e)
         {
             string FecSave;
-            // ✅ 1. Obtener fecha del servidor (mantener tu lógica original)
+
+            // ✅ 1. Obtener fecha del servidor
             try
             {
-                if (thisConnecion.State != ConnectionState.Open) thisConnecion.Open();
+                if (thisConnecion.State != ConnectionState.Open)
+                    thisConnecion.Open();
+
                 string fecha = "SELECT SYSDATETIME()";
                 SqlCommand cmdfechoy = new SqlCommand(fecha, thisConnecion);
                 fecha_hoy_hoy = Convert.ToDateTime(cmdfechoy.ExecuteScalar()).ToString("dd/MM/yyyy");
@@ -2085,7 +2088,7 @@ namespace SistemaEnvases
                 if (ValidaActualizacion())
                 {
                     requiereActualizar = true;
-                    this.Close(); // Cerramos el formulario para dar paso al actualizador
+                    this.Close();
                 }
                 #endregion
             }
@@ -2096,13 +2099,13 @@ namespace SistemaEnvases
                 return;
             }
 
-            // ✅ 2. Validación de fecha para usuarios (mantener tu lógica original)
+            // ✅ 2. Validación de fecha para usuarios
             if (usuariostotales.Contains(usuario_actual) == false)
             {
                 fechasal.Text = fecha_hoy_hoy;
             }
 
-            // ✅ 3. Validaciones de campos (mantener tus validaciones originales)
+            // ✅ 3. Validaciones de campos
             if ((clbprov.Text.ToString().Trim().Length == 0) || (cmb_proveedor.Text.ToString().Trim().Length == 0))
             {
                 MessageBox.Show("Seleccione o ingrese un Proveedor válido");
@@ -2139,25 +2142,23 @@ namespace SistemaEnvases
             tabla = Cmb_Tabla.Text.ToString().Trim();
 
             if (rancho == "Sin Ranchos Disponibles")
-            {
                 rancho = "";
-            }
 
             if (tabla == "Sin Tablas Disponibles")
-            {
                 tabla = "";
-            }
 
             // ✅ 5. Preparar conexión y transacción
-            if (thisConnecion.State != ConnectionState.Open) thisConnecion.Open();
+            if (thisConnecion.State != ConnectionState.Open)
+                thisConnecion.Open();
+
             SqlTransaction transaction = thisConnecion.BeginTransaction();
 
             try
             {
                 int folioGenerado = 0;
-                SqlCommand cmd;
 
                 // ✅ 6. Insertar cabecera Y capturar el folio con SCOPE_IDENTITY()
+                // CORRECCIÓN: Usar parámetros y SIEMPRE asignar la transacción
                 string insertHeader = @"INSERT INTO TB_SALIDAS_ENVASES(
             FECHA, PROV_CLAVE, PROV_NOMBRE, RCH_CLAVE, RCH_NOMBRE, 
             TBL_CLAVE, TBL_NOMBRE, NOM_CHOFER, NOM_OPERADOR, SAL_STATUS, FECHA_GUARDADO) 
@@ -2165,22 +2166,25 @@ namespace SistemaEnvases
                    @TblClave, @TblNombre, @Chofer, @Operador, 'T', @FechaGuardado);
             SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-                cmd = new SqlCommand(insertHeader, thisConnecion, transaction);
-                cmd.Parameters.AddWithValue("@Fecha", Convert.ToDateTime(fechasal.Text));
-                cmd.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
-                cmd.Parameters.AddWithValue("@ProvNombre", cmb_proveedor.Text.Trim());
-                cmd.Parameters.AddWithValue("@RchClave", clbrancho.Text.Trim());
-                cmd.Parameters.AddWithValue("@RchNombre", rancho.Trim());
-                cmd.Parameters.AddWithValue("@TblClave", clbtabla.Text.Trim());
-                cmd.Parameters.AddWithValue("@TblNombre", tabla.Trim());
-                cmd.Parameters.AddWithValue("@Chofer", Chofer.Text.Trim());
-                cmd.Parameters.AddWithValue("@Operador", Operador.Text.Trim());
-                cmd.Parameters.AddWithValue("@FechaGuardado", FecSave);
+                // CORRECCIÓN: Crear comando con transacción explícita
+                using (SqlCommand cmdHeader = new SqlCommand(insertHeader, thisConnecion, transaction))
+                {
+                    cmdHeader.Parameters.AddWithValue("@Fecha", Convert.ToDateTime(fechasal.Text));
+                    cmdHeader.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
+                    cmdHeader.Parameters.AddWithValue("@ProvNombre", cmb_proveedor.Text.Trim());
+                    cmdHeader.Parameters.AddWithValue("@RchClave", clbrancho.Text.Trim());
+                    cmdHeader.Parameters.AddWithValue("@RchNombre", rancho.Trim());
+                    cmdHeader.Parameters.AddWithValue("@TblClave", clbtabla.Text.Trim());
+                    cmdHeader.Parameters.AddWithValue("@TblNombre", tabla.Trim());
+                    cmdHeader.Parameters.AddWithValue("@Chofer", Chofer.Text.Trim());
+                    cmdHeader.Parameters.AddWithValue("@Operador", Operador.Text.Trim());
+                    cmdHeader.Parameters.AddWithValue("@FechaGuardado", FecSave);
 
-                // ✅ 7. ¡CAPTURAR EL FOLIO REAL GENERADO POR LA BD!
-                folioGenerado = Convert.ToInt32(cmd.ExecuteScalar());
+                    // ✅ 7. ¡CAPTURAR EL FOLIO REAL GENERADO POR LA BD!
+                    folioGenerado = Convert.ToInt32(cmdHeader.ExecuteScalar());
+                }
 
-                // ✅ 8. Insertar detalles y actualizar inventarios (todo con parámetros y transacción)
+                // ✅ 8. Insertar detalles y actualizar inventarios
                 foreach (DataRow row in ProductosGuardar.Rows)
                 {
                     int cantidad = Convert.ToInt32(row["Cantidad"].ToString().Trim());
@@ -2195,14 +2199,17 @@ namespace SistemaEnvases
                 FOLIO, ENV_CLAVE, ENV_NOMBRE, CANTIDAD, PROD_CLAVE, PROD_NOMBRE) 
                 VALUES(@Folio, @EnvClave, @EnvNombre, @Cantidad, @ProdClave, @ProdNombre)";
 
-                    cmd = new SqlCommand(insertDetalle, thisConnecion, transaction);
-                    cmd.Parameters.AddWithValue("@Folio", folioGenerado);
-                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
-                    cmd.Parameters.AddWithValue("@EnvNombre", envNombre);
-                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
-                    cmd.Parameters.AddWithValue("@ProdClave", prodClave);
-                    cmd.Parameters.AddWithValue("@ProdNombre", prodNombre);
-                    cmd.ExecuteNonQuery();
+                    // CORRECCIÓN: Usar 'using' y pasar transacción explícitamente
+                    using (SqlCommand cmdDetalle = new SqlCommand(insertDetalle, thisConnecion, transaction))
+                    {
+                        cmdDetalle.Parameters.AddWithValue("@Folio", folioGenerado);
+                        cmdDetalle.Parameters.AddWithValue("@EnvClave", envClave);
+                        cmdDetalle.Parameters.AddWithValue("@EnvNombre", envNombre);
+                        cmdDetalle.Parameters.AddWithValue("@Cantidad", cantidad);
+                        cmdDetalle.Parameters.AddWithValue("@ProdClave", prodClave);
+                        cmdDetalle.Parameters.AddWithValue("@ProdNombre", prodNombre);
+                        cmdDetalle.ExecuteNonQuery();
+                    }
 
                     // --- UPDATE 1: TB_MSTR_ENVASES ---
                     string updateMstr = @"UPDATE TB_MSTR_ENVASES 
@@ -2212,23 +2219,27 @@ namespace SistemaEnvases
                   AND tbl_clave = @TblClave 
                   AND env_clave = @EnvClave";
 
-                    cmd = new SqlCommand(updateMstr, thisConnecion, transaction);
-                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
-                    cmd.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
-                    cmd.Parameters.AddWithValue("@RchClave", clbrancho.Text.Trim());
-                    cmd.Parameters.AddWithValue("@TblClave", clbtabla.Text.Trim());
-                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
-                    cmd.ExecuteNonQuery();
+                    using (SqlCommand cmdMstr = new SqlCommand(updateMstr, thisConnecion, transaction))
+                    {
+                        cmdMstr.Parameters.AddWithValue("@Cantidad", cantidad);
+                        cmdMstr.Parameters.AddWithValue("@ProvClave", clbprov.Text.Trim());
+                        cmdMstr.Parameters.AddWithValue("@RchClave", clbrancho.Text.Trim());
+                        cmdMstr.Parameters.AddWithValue("@TblClave", clbtabla.Text.Trim());
+                        cmdMstr.Parameters.AddWithValue("@EnvClave", envClave);
+                        cmdMstr.ExecuteNonQuery();
+                    }
 
                     // --- UPDATE 2: TB_MSTR_INV_ENVASES ---
                     string updateInv = @"UPDATE TB_MSTR_INV_ENVASES 
                 SET ENV_INV_CANT = (ENV_INV_CANT - @Cantidad) 
                 WHERE ENV_CLAVE = @EnvClave";
 
-                    cmd = new SqlCommand(updateInv, thisConnecion, transaction);
-                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
-                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
-                    cmd.ExecuteNonQuery();
+                    using (SqlCommand cmdInv = new SqlCommand(updateInv, thisConnecion, transaction))
+                    {
+                        cmdInv.Parameters.AddWithValue("@Cantidad", cantidad);
+                        cmdInv.Parameters.AddWithValue("@EnvClave", envClave);
+                        cmdInv.ExecuteNonQuery();
+                    }
 
                     // --- UPDATE 3: TB_MSTR_INV_ENVASES_dos ---
                     string updateInvDos = @"UPDATE TB_MSTR_INV_ENVASES_dos 
@@ -2236,11 +2247,13 @@ namespace SistemaEnvases
                 WHERE ENV_CLAVE = @EnvClave 
                   AND ENV_FECHA = @FechaEnv";
 
-                    cmd = new SqlCommand(updateInvDos, thisConnecion, transaction);
-                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
-                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
-                    cmd.Parameters.AddWithValue("@FechaEnv", fechaSalida);
-                    cmd.ExecuteNonQuery();
+                    using (SqlCommand cmdInvDos = new SqlCommand(updateInvDos, thisConnecion, transaction))
+                    {
+                        cmdInvDos.Parameters.AddWithValue("@Cantidad", cantidad);
+                        cmdInvDos.Parameters.AddWithValue("@EnvClave", envClave);
+                        cmdInvDos.Parameters.AddWithValue("@FechaEnv", fechaSalida);
+                        cmdInvDos.ExecuteNonQuery();
+                    }
 
                     // --- UPDATE 4: TB_MSTR_INV_ENVASES_sin_corte ---
                     string updateInvSinCorte = @"UPDATE TB_MSTR_INV_ENVASES_sin_corte 
@@ -2248,16 +2261,18 @@ namespace SistemaEnvases
                 WHERE ENV_CLAVE = @EnvClave 
                   AND ENV_FECHA = @FechaEnv";
 
-                    cmd = new SqlCommand(updateInvSinCorte, thisConnecion, transaction);
-                    cmd.Parameters.AddWithValue("@Cantidad", cantidad);
-                    cmd.Parameters.AddWithValue("@EnvClave", envClave);
-                    cmd.Parameters.AddWithValue("@FechaEnv", fechaSalida);
-                    cmd.ExecuteNonQuery();
+                    using (SqlCommand cmdInvSinCorte = new SqlCommand(updateInvSinCorte, thisConnecion, transaction))
+                    {
+                        cmdInvSinCorte.Parameters.AddWithValue("@Cantidad", cantidad);
+                        cmdInvSinCorte.Parameters.AddWithValue("@EnvClave", envClave);
+                        cmdInvSinCorte.Parameters.AddWithValue("@FechaEnv", fechaSalida);
+                        cmdInvSinCorte.ExecuteNonQuery();
+                    }
 
                     // --- Validación especial para envase 81 ---
                     if (envClave == "81")
                     {
-                        validarproveedoresparrago(clbprov.Text.Trim(), fechaSalida.ToString("dd/MM/yyyy"));
+                        validarproveedoresparrago(clbprov.Text.Trim(), fechaSalida.ToString("dd/MM/yyyy"), transaction);
                     }
                 }
 
@@ -2271,14 +2286,16 @@ namespace SistemaEnvases
             (fecha, nom_compu, nom_usu, tipo_mov, op_clave, folio, detalle, sistema, mov_folio) 
             VALUES(@FechaLog, @Maquina, @Usuario, @TipoMov, '2.18', @Folio, @Detalle, 'SISGAB', @Folio)";
 
-                cmd = new SqlCommand(insertLog, thisConnecion, transaction);
-                cmd.Parameters.AddWithValue("@FechaLog", DateTime.Now);
-                cmd.Parameters.AddWithValue("@Maquina", Environment.MachineName.Trim());
-                cmd.Parameters.AddWithValue("@Usuario", usuario_actual);
-                cmd.Parameters.AddWithValue("@TipoMov", tipoMov);
-                cmd.Parameters.AddWithValue("@Folio", folioGenerado);
-                cmd.Parameters.AddWithValue("@Detalle", detalleMov);
-                cmd.ExecuteNonQuery();
+                using (SqlCommand cmdLog = new SqlCommand(insertLog, thisConnecion, transaction))
+                {
+                    cmdLog.Parameters.AddWithValue("@FechaLog", DateTime.Now);
+                    cmdLog.Parameters.AddWithValue("@Maquina", Environment.MachineName.Trim());
+                    cmdLog.Parameters.AddWithValue("@Usuario", usuario_actual);
+                    cmdLog.Parameters.AddWithValue("@TipoMov", tipoMov);
+                    cmdLog.Parameters.AddWithValue("@Folio", folioGenerado);
+                    cmdLog.Parameters.AddWithValue("@Detalle", detalleMov);
+                    cmdLog.ExecuteNonQuery();
+                }
 
                 // ✅ 10. Confirmar TODA la transacción
                 transaction.Commit();
@@ -2299,10 +2316,7 @@ namespace SistemaEnvases
                 DialogResult result = printDialog1.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    // Pasar el folio a la función de impresión
-
                     Imprimir_Salida_Con_Folio(folioGenerado);
-                    //Imprimir_Salida();
                 }
 
                 // ✅ 14. Limpiar formulario
@@ -2311,14 +2325,20 @@ namespace SistemaEnvases
             catch (Exception ex)
             {
                 // ✅ 15. Revertir todo si algo falla
-                transaction?.Rollback();
+                try
+                {
+                    transaction?.Rollback();
+                }
+                catch { /* Ignorar error en rollback */ }
+
                 thisConnecion.Close();
                 MessageBox.Show($"Error al guardar la salida: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 // ✅ 16. Asegurar que la conexión se cierre siempre
-                if (thisConnecion.State == ConnectionState.Open) thisConnecion.Close();
+                if (thisConnecion.State == ConnectionState.Open)
+                    thisConnecion.Close();
             }
         }
 
@@ -3063,6 +3083,83 @@ namespace SistemaEnvases
             }
             //thisConnecion.Close();
 
+        }
+
+        // ✅ VERSIÓN CORREGIDA - Con transacción como parámetro
+        public void validarproveedoresparrago(string PROVEEDOR_ID, string fecha_actual, SqlTransaction transaction = null)
+        {
+            bool conexionPropia = (transaction == null);
+
+            try
+            {
+                // Si no hay transacción, abrimos conexión propia
+                if (conexionPropia && thisConnecion.State != ConnectionState.Open)
+                    thisConnecion.Open();
+
+                // ✅ Query parametrizada para evitar SQL Injection
+                string query = "SELECT cve_prov FROM Tb_ENV_PROV_CAJ_ESPARRAGO WHERE cve_prov = @ProvId AND estatus = '1'";
+
+                using (SqlCommand cmd = new SqlCommand(query, thisConnecion))
+                {
+                    // Asignar transacción si existe
+                    if (transaction != null)
+                        cmd.Transaction = transaction;
+
+                    cmd.Parameters.AddWithValue("@ProvId", PROVEEDOR_ID);
+
+                    object objValue = cmd.ExecuteScalar();
+
+                    if (objValue == null)
+                    {
+                        string provTrim = PROVEEDOR_ID.Trim();
+
+                        if (provTrim != "01" && provTrim != "03" && provTrim != "RO" && provTrim != "212")
+                        {
+                            // ✅ INSERT 1 parametrizado
+                            string insertProv = @"INSERT INTO Tb_ENV_PROV_CAJ_ESPARRAGO (cve_prov, estatus) 
+                                          VALUES (@ProvId, '1')";
+
+                            using (SqlCommand cmdInsert = new SqlCommand(insertProv, thisConnecion))
+                            {
+                                if (transaction != null)
+                                    cmdInsert.Transaction = transaction;
+
+                                cmdInsert.Parameters.AddWithValue("@ProvId", provTrim);
+                                cmdInsert.ExecuteNonQuery();
+                            }
+
+                            // ✅ INSERT 2 parametrizado
+                            string insertInv = @"INSERT INTO TB_MSTR_INV_CAJAS_PROV_ESPARRAGO 
+                        (PROV_CLAVE, ENV_CLAVE, ENV_FECHA, ENV_INV_INI_CANT, ENV_ENTR_CANT, ENV_SAL_CANT) 
+                        VALUES (@ProvId, '81', @Fecha, '0', '0', '0')";
+
+                            using (SqlCommand cmdInsertInv = new SqlCommand(insertInv, thisConnecion))
+                            {
+                                if (transaction != null)
+                                    cmdInsertInv.Transaction = transaction;
+
+                                cmdInsertInv.Parameters.AddWithValue("@ProvId", provTrim);
+                                cmdInsertInv.Parameters.AddWithValue("@Fecha", fecha_actual);
+                                cmdInsertInv.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Si es conexión propia, la cerramos en caso de error
+                if (conexionPropia && thisConnecion.State == ConnectionState.Open)
+                    thisConnecion.Close();
+
+                throw; // Relanzamos para que el llamador maneje el error
+            }
+            finally
+            {
+                // Cerramos solo si fue conexión propia (sin transacción)
+                if (conexionPropia && thisConnecion.State == ConnectionState.Open)
+                    thisConnecion.Close();
+            }
         }
 
 
