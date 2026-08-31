@@ -1371,7 +1371,7 @@
             this.CBProvini.ForeColor = System.Drawing.SystemColors.WindowText;
             this.CBProvini.FormattingEnabled = true;
             this.CBProvini.IntegralHeight = false;
-            this.CBProvini.Location = new System.Drawing.Point(130, 169);
+            this.CBProvini.Location = new System.Drawing.Point(130, 170);
             this.CBProvini.Name = "CBProvini";
             this.CBProvini.Size = new System.Drawing.Size(195, 21);
             this.CBProvini.TabIndex = 656;

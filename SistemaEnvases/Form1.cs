@@ -7512,33 +7512,35 @@ namespace SistemaEnvases
         #region CARGAR INFO DE PROVEEDORES, RANCHOS Y TABLAS PARA REPORTES
         public void cargarCBProvIniReportes()
         {
-            string consulta = @"
-SELECT '100' AS Numero, 
-       LTRIM(RTRIM(prov_clave)) AS prov_clave,
-       LTRIM(RTRIM(prov_nombre)) AS prov_nombre
-FROM vwProveedor
-WHERE prov_clave IN (
-    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_mp
-    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
-      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
-)
-UNION
-SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
-FROM vwProveedor
-WHERE prov_clave IN (
-    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_pt
-    WHERE rpt_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
-      AND rpt_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
-)
-UNION
-SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
-FROM vwProveedor
-WHERE prov_clave IN (
-    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_esparrago
-    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
-      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
-)
-ORDER BY prov_nombre ASC";
+            //            string consulta = @"
+            //SELECT '100' AS Numero, 
+            //       LTRIM(RTRIM(prov_clave)) AS prov_clave,
+            //       LTRIM(RTRIM(prov_nombre)) AS prov_nombre
+            //FROM vwProveedor
+            //WHERE prov_clave IN (
+            //    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_mp
+            //    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+            //      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+            //)
+            //UNION
+            //SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
+            //FROM vwProveedor
+            //WHERE prov_clave IN (
+            //    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_pt
+            //    WHERE rpt_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+            //      AND rpt_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+            //)
+            //UNION
+            //SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
+            //FROM vwProveedor
+            //WHERE prov_clave IN (
+            //    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_esparrago
+            //    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+            //      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+            //)
+            //ORDER BY prov_nombre ASC";
+
+            string consulta = @"SELECT ('100') AS Numero, prov_clave, CONCAT(RTRIM(prov_nombre), ' - ', RTRIM(prov_clave)) AS prov_nombre FROM tb_Cat_Proveedor Order By prov_Nombre";
 
             try
             {
