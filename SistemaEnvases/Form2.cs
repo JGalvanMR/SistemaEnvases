@@ -314,7 +314,7 @@ namespace SistemaEnvases
                 inv_x_proveedor_reporte.Rows.Add(rowi);
 
 
-                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt16(row["ENV_INV_INI_CANT"]);
+                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt32(row["ENV_INV_INI_CANT"]);
                 Total_Entradas = Total_Entradas + Convert.ToInt32(entradas);
                 Total_Salidas = Total_Salidas + Convert.ToInt32(salidas);
                 Total_Inventario_Final = Total_Inventario_Final + Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(salidas) - Convert.ToInt32(entradas);
