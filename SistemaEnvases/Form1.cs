@@ -222,6 +222,10 @@ namespace SistemaEnvases
 
             // Set up the ToolTip text for the Button and Checkbox.
             toolTip1.SetToolTip(this.button18, "Iniciar Cierre diario de Inventario de Envases");
+
+            // Pestaña para consultar/imprimir las salidas generadas desde la app RFIDTrackBin
+            SalidasRfidTab.Agregar(this.tabControl1);
+
             /*thisConnecion.Open();
             mes_actual = "SELECT  datepart(mm, getdate())";
             SqlCommand cmdmes = new SqlCommand(mes_actual, thisConnecion);
