@@ -222,6 +222,10 @@ namespace SistemaEnvases
 
             // Set up the ToolTip text for the Button and Checkbox.
             toolTip1.SetToolTip(this.button18, "Iniciar Cierre diario de Inventario de Envases");
+
+            // Pestaña para consultar/imprimir las salidas generadas desde la app RFIDTrackBin
+            SalidasRfidTab.Agregar(this.tabControl1);
+
             /*thisConnecion.Open();
             mes_actual = "SELECT  datepart(mm, getdate())";
             SqlCommand cmdmes = new SqlCommand(mes_actual, thisConnecion);
@@ -3721,7 +3725,7 @@ namespace SistemaEnvases
 
 
 
-                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt16(row["ENV_INV_INI_CANT"]);
+                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt32(row["ENV_INV_INI_CANT"]);
                 Total_Entradas = Total_Entradas + Convert.ToInt32(entradas);
                 Total_Salidas = Total_Salidas + Convert.ToInt32(salidas);
                 Total_Inventario_Final = Total_Inventario_Final + Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(salidas) - Convert.ToInt32(entradas);
@@ -4145,7 +4149,7 @@ namespace SistemaEnvases
                 thisConnecion.Open();
                 query = "SELECT * FROM TB_SALIDAS_ENVASES INNER JOIN TB_DETSALIDAS_ENVASES ON TB_SALIDAS_ENVASES.FOLIO = TB_DETSALIDAS_ENVASES.FOLIO WHERE TB_SALIDAS_ENVASES.FECHA BETWEEN '" + Convert.ToDateTime(FechaInirepo.Text).ToString("dd/MM/yyyy") + "' AND '" + Convert.ToDateTime(FechaFinrepo.Text).ToString("dd/MM/yyyy") + "' AND ENV_CLAVE IN (SELECT env_clave FROM  tb_cat_envases WHERE (env_inventario = '1')) ORDER BY FECHA, ENV_CLAVE";
                 cm = new SqlCommand(query, thisConnecion);
-                dr = cm.ExecuteReader();
+                 dr = cm.ExecuteReader();
 
                 int totalsal = 0;
 
@@ -5775,7 +5779,7 @@ namespace SistemaEnvases
 
                             totalEmpleadosProcesar = dias;  //Total de Empleados que seleccionó el usuario
                             progreso++; //Aumentando el progreso 
-                            porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                            porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                             System.Threading.Thread.Sleep(50);
                             bg.ReportProgress(porciento);
 
@@ -5940,7 +5944,7 @@ namespace SistemaEnvases
                 rowi["INVENTARIO FINAL"] = Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(entradas) - Convert.ToInt32(salidas);
                 inv_x_proveedor_CAJONES.Rows.Add(rowi);
 
-                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt16(row["ENV_INV_INI_CANT"]);
+                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt32(row["ENV_INV_INI_CANT"]);
                 Total_Entradas = Total_Entradas + Convert.ToInt32(entradas);
                 Total_Salidas = Total_Salidas + Convert.ToInt32(salidas);
                 Total_Inventario_Final = Total_Inventario_Final + Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(salidas) - Convert.ToInt32(entradas);
@@ -6138,7 +6142,7 @@ namespace SistemaEnvases
 
                             totalEmpleadosProcesar = dias;  //Total de Empleados que seleccionó el usuario
                             progreso++; //Aumentando el progreso 
-                            porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                            porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                             System.Threading.Thread.Sleep(50);
                             bgcajones.ReportProgress(porciento);
 
@@ -6354,7 +6358,7 @@ namespace SistemaEnvases
                 rowi["INVENTARIO FINAL"] = Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(salidas) - Convert.ToInt32(entradas);
                 inv_x_proveedor_CAJONES_ESPARRAGO.Rows.Add(rowi);
 
-                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt16(row["ENV_INV_INI_CANT"]);
+                Total_INVENTARIO_Ini = Total_INVENTARIO_Ini + Convert.ToInt32(row["ENV_INV_INI_CANT"]);
                 Total_Entradas = Total_Entradas + Convert.ToInt32(entradas);
                 Total_Salidas = Total_Salidas + Convert.ToInt32(salidas);
                 Total_Inventario_Final = Total_Inventario_Final + Convert.ToInt32(row["ENV_INV_INI_CANT"]) + Convert.ToInt32(salidas) - Convert.ToInt32(entradas);
@@ -6572,7 +6576,7 @@ namespace SistemaEnvases
 
                             totalEmpleadosProcesar = dias;  //Total de Empleados que seleccionó el usuario
                             progreso++; //Aumentando el progreso 
-                            porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                            porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                             System.Threading.Thread.Sleep(50);
                             bgESPARRAGO.ReportProgress(porciento);
 
@@ -6777,7 +6781,7 @@ namespace SistemaEnvases
 
                     totalEmpleadosProcesar = veces;  //Total de Empleados que seleccionó el usuario
                     progreso++; //Aumentando el progreso 
-                    porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                    porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                     System.Threading.Thread.Sleep(50);
                     bgCorteDiario.ReportProgress(porciento);
                 }
@@ -6860,7 +6864,7 @@ namespace SistemaEnvases
 
                         totalEmpleadosProcesar = veces;  //Total de Empleados que seleccionó el usuario
                         progreso++; //Aumentando el progreso 
-                        porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                        porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                         System.Threading.Thread.Sleep(50);
                         bgCorteDiario.ReportProgress(porciento);
                     }
@@ -6947,7 +6951,7 @@ namespace SistemaEnvases
                         //thisConnecion.Close();
                         totalEmpleadosProcesar = veces;  //Total de Empleados que seleccionó el usuario
                         progreso++; //Aumentando el progreso 
-                        porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                        porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                         System.Threading.Thread.Sleep(50);
                         bgCorteDiario.ReportProgress(porciento);
                     }
@@ -7045,7 +7049,7 @@ namespace SistemaEnvases
                     //thisConnecion.Close();
                     //totalEmpleadosProcesar = veces;  //Total de Empleados que seleccionó el usuario
                     //progreso++; //Aumentando el progreso 
-                    //porciento = Convert.ToInt16((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
+                    //porciento = Convert.ToInt32((((double)progreso / (double)totalEmpleadosProcesar) * 100.00)); //Calculo del porcentaje
                     //System.Threading.Thread.Sleep(50);
                     //bgCorteDiario.ReportProgress(porciento);
                 }
@@ -7512,33 +7516,35 @@ namespace SistemaEnvases
         #region CARGAR INFO DE PROVEEDORES, RANCHOS Y TABLAS PARA REPORTES
         public void cargarCBProvIniReportes()
         {
-            string consulta = @"
-SELECT '100' AS Numero, 
-       LTRIM(RTRIM(prov_clave)) AS prov_clave,
-       LTRIM(RTRIM(prov_nombre)) AS prov_nombre
-FROM vwProveedor
-WHERE prov_clave IN (
-    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_mp
-    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
-      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
-)
-UNION
-SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
-FROM vwProveedor
-WHERE prov_clave IN (
-    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_pt
-    WHERE rpt_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
-      AND rpt_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
-)
-UNION
-SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
-FROM vwProveedor
-WHERE prov_clave IN (
-    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_esparrago
-    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
-      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
-)
-ORDER BY prov_nombre ASC";
+            //            string consulta = @"
+            //SELECT '100' AS Numero, 
+            //       LTRIM(RTRIM(prov_clave)) AS prov_clave,
+            //       LTRIM(RTRIM(prov_nombre)) AS prov_nombre
+            //FROM vwProveedor
+            //WHERE prov_clave IN (
+            //    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_mp
+            //    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+            //      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+            //)
+            //UNION
+            //SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
+            //FROM vwProveedor
+            //WHERE prov_clave IN (
+            //    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_pt
+            //    WHERE rpt_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+            //      AND rpt_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+            //)
+            //UNION
+            //SELECT '100' AS Numero, LTRIM(RTRIM(prov_clave)), LTRIM(RTRIM(prov_nombre))
+            //FROM vwProveedor
+            //WHERE prov_clave IN (
+            //    SELECT DISTINCT prov_clave FROM tb_mstr_recepcion_esparrago
+            //    WHERE rmp_fecha >= CAST(DATEADD(DAY,-365,GETDATE()) AS DATE)
+            //      AND rmp_fecha  < DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+            //)
+            //ORDER BY prov_nombre ASC";
+
+            string consulta = @"SELECT ('100') AS Numero, prov_clave, CONCAT(RTRIM(prov_nombre), ' - ', RTRIM(prov_clave)) AS prov_nombre FROM tb_Cat_Proveedor Order By prov_Nombre";
 
             try
             {
